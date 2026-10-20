@@ -1,0 +1,90 @@
+/*
+ * ATELIER / SYSTEM — design tokens.
+ * Every colour, size, duration and easing used by the site is defined here.
+ * Documented in DESIGN.md. Motion tokens are mirrored in lib/motion/tokens.ts
+ * for JavaScript-driven animation (GSAP, R3F) — keep the two in sync.
+ */
+:root {
+  /* Colour — dark-first, lime is a focal colour, not a theme colour */
+  --c-void: #090b11;
+  --c-graphite: #171e24;
+  --c-elevated: #222b34;
+  --c-text: #f4f5f7;
+  --c-text-2: #8b9db5;
+  --c-text-3: #5f6f84; /* decorative/meta only — fails AA for body text */
+  --c-lime: #b6ff3b;
+  --c-lime-ink: #0d1400; /* text placed on lime */
+  --c-ice: #8caeff;
+  --c-line: rgb(244 245 247 / 0.09);
+  --c-line-strong: rgb(244 245 247 / 0.18);
+  --c-focus: #b6ff3b;
+  --c-warn: #ffb547;
+
+  /* Atmosphere */
+  --glow-lime: 0 0 0 1px rgb(182 255 59 / 0.35), 0 0 32px -6px rgb(182 255 59 / 0.45);
+  --ambient-ice: radial-gradient(60% 50% at 70% 40%, rgb(140 174 255 / 0.10), transparent 70%);
+  --ambient-lime: radial-gradient(40% 35% at 80% 70%, rgb(182 255 59 / 0.06), transparent 70%);
+
+  /* Type families (set by next/font in app/layout.tsx) */
+  --f-display: var(--font-display), "Space Grotesk", system-ui, sans-serif;
+  --f-body: var(--font-body), "Inter", system-ui, sans-serif;
+  --f-mono: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
+
+  /* Type scale — fluid, 360px → 1600px viewport */
+  --t-hero: clamp(3.5rem, 1.2rem + 10.2vw, 10rem);       /* 56 → 160 */
+  --t-h1: clamp(2.75rem, 1.6rem + 5.1vw, 5.5rem);        /* 44 → 88 */
+  --t-h2: clamp(2rem, 1.35rem + 2.9vw, 4rem);            /* 32 → 64 */
+  --t-h3: clamp(1.375rem, 1.15rem + 1vw, 2rem);          /* 22 → 32 */
+  --t-lead: clamp(1.125rem, 1.03rem + 0.42vw, 1.375rem); /* 18 → 22 */
+  --t-body: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);      /* 16 → 18 */
+  --t-small: 0.875rem;                                   /* 14 */
+  --t-meta: 0.8125rem;                                   /* 13 */
+
+  --lh-tight: 0.92;
+  --lh-snug: 1.15;
+  --lh-body: 1.6;
+  --track-display: -0.045em;
+  --track-heading: -0.03em;
+
+  /* Space — 4px base */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+  --s-10: 8rem;
+  --s-11: 12rem;
+  --gutter: clamp(1rem, 0.5rem + 2.2vw, 2.5rem);
+  --section-y: clamp(6rem, 4rem + 8vw, 12rem);
+  --max-w: 1520px;
+
+  /* Radii — tied to hierarchy, not one value for everything */
+  --r-xs: 4px;   /* chips, data cells */
+  --r-sm: 8px;   /* controls */
+  --r-md: 14px;  /* panels */
+  --r-lg: 28px;  /* stages */
+  --r-pill: 999px;
+
+  /* Motion */
+  --d-instant: 90ms;
+  --d-fast: 160ms;
+  --d-base: 280ms;
+  --d-slow: 520ms;
+  --d-cinematic: 1100ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Layers */
+  --z-canvas: 0;
+  --z-content: 10;
+  --z-nav: 50;
+  --z-sheet: 60;
+  --z-toast: 70;
+
+  --nav-h: 64px;
+}
