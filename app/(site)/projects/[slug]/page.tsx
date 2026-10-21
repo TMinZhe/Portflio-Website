@@ -18,6 +18,7 @@ import { DetailHero } from "@/components/detail/detail-hero";
 import { DetailCover } from "@/components/detail/cover";
 import { DetailBody, Prose, type DetailSection } from "@/components/detail/detail-body";
 import {
+  CapabilityGrid,
   ChallengeList,
   DecisionList,
   FeatureList,
@@ -32,6 +33,7 @@ import { Gallery } from "@/components/media/gallery";
 import { Walkthrough } from "@/components/detail/walkthrough";
 import { DeepDiveBody, WorkflowDiagram } from "@/components/detail/case-study";
 import { PageFooterNav, RelatedCards } from "@/components/detail/related-nav";
+import { demos } from "@/components/showcases/demos";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -91,6 +93,9 @@ export default async function ProjectPage({ params }: Props) {
   const archNotes = confirmedFeatures(p.architectureNotes ?? []);
   const nextSteps = confirmedFeatures(p.nextSteps ?? []);
   const resultsIntro = knownList(p.resultsIntro);
+  const capabilities = confirmedFeatures(p.capabilities ?? []);
+  const ProblemFigure = p.problemFigure ? demos[p.problemFigure] : null;
+  const ArchitectureFigure = p.architectureFigure ? demos[p.architectureFigure] : null;
 
   const sections: DetailSection[] = [
     { id: "overview", title: "Overview", body: knownList(p.overview).length > 0 && <Prose paragraphs={knownList(p.overview)} /> },
@@ -102,6 +107,11 @@ export default async function ProjectPage({ params }: Props) {
         <>
           <Prose paragraphs={knownList(p.problem)} lead={false} />
           {p.workflow && <WorkflowDiagram workflow={p.workflow} />}
+          {ProblemFigure && (
+            <div className="mt-10" data-reveal>
+              <ProblemFigure />
+            </div>
+          )}
         </>
       ),
     },
@@ -133,14 +143,20 @@ export default async function ProjectPage({ params }: Props) {
       id: "architecture",
       title: "Architecture",
       heading: h.architecture,
-      body: p.architecture && (
+      body: (ArchitectureFigure || p.architecture) && (
         <div className="space-y-8">
-          <ArchitectureDiagram data={p.architecture} title={p.title} />
+          {ArchitectureFigure ? <ArchitectureFigure /> : p.architecture && <ArchitectureDiagram data={p.architecture} title={p.title} />}
           {archNotes.length > 0 && <FeatureList features={archNotes} />}
         </div>
       ),
     },
     { id: "decisions", title: "Engineering decisions", heading: h.decisions, body: decisions.length > 0 && <DecisionList decisions={decisions} /> },
+    {
+      id: "capabilities",
+      title: "Platform capabilities",
+      heading: h.capabilities,
+      body: capabilities.length > 0 && <CapabilityGrid items={capabilities} />,
+    },
     { id: "challenges", title: "Challenges", heading: h.challenges, body: challenges.length > 0 && <ChallengeList challenges={challenges} /> },
     {
       id: "results",
@@ -211,7 +227,7 @@ export default async function ProjectPage({ params }: Props) {
           )
         }
       />
-      <DetailCover cover={p.cover} showcase={p.showcase} allowStill={!p.deepDives?.some((d) => d.demo)} />
+      <DetailCover cover={p.cover} showcase={p.showcase} allowStill={!p.deepDives?.some((d) => d.demo === p.showcase)} />
       <DetailBody sections={sections} />
       <PageFooterNav
         kind="project"

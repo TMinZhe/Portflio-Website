@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import type { Showcase } from "@/content/types";
 import { STORES, grid, type Cell } from "./ops-console-model";
 import { RiskMatrix } from "./erm/risk-matrix";
+import { StoreSyncPreview } from "./inventory/store-sync-preview";
 
 /*
  * Still previews for the homepage. Each is an illustrative schematic of what a
@@ -100,6 +101,7 @@ function RiskMatrixPreview() {
 
 export const previews: Partial<Record<Showcase, ComponentType>> = {
   "ops-console": InventoryPreview,
+  "store-sync": StoreSyncPreview,
   "text-to-sql": TextToSqlPreview,
   "risk-matrix": RiskMatrixPreview,
 };

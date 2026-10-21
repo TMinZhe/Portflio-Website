@@ -13,6 +13,7 @@ export const skillDomains: SkillDomain[] = [
       { name: "Python", usedIn: ["collins-aerospace"], verified: true },
       { name: "SQL", usedIn: ["nl-analytics-assistant", "unistop-tech", "collins-aerospace"], verified: true },
       { name: "TypeScript", usedIn: ["this-site"], verified: true },
+      { name: "JavaScript", usedIn: ["inventory-replenishment", "unistop-tech"], verified: true },
     ],
   },
   {
@@ -26,7 +27,7 @@ export const skillDomains: SkillDomain[] = [
   {
     id: "data",
     name: "Databases",
-    skills: [{ name: "MariaDB", usedIn: ["inventory-replenishment", "unistop-tech"], verified: true }],
+    skills: [{ name: "MySQL", usedIn: ["inventory-replenishment", "unistop-tech"], verified: true }],
   },
   {
     id: "ai",
@@ -56,9 +57,9 @@ export const skillDomains: SkillDomain[] = [
     id: "frontend",
     name: "Frontend",
     skills: [
-      // Evidence: this site's own source code.
-      { name: "React and Next.js", usedIn: ["this-site"], verified: true },
-      { name: "Tailwind CSS", usedIn: ["this-site"], verified: true },
+      // Evidence: this site's own source code, and the inventory platform's React/Vite frontend.
+      { name: "React and Next.js", usedIn: ["inventory-replenishment", "this-site"], verified: true },
+      { name: "Tailwind CSS", usedIn: ["inventory-replenishment", "this-site"], verified: true },
       { name: "Three.js / React Three Fiber", usedIn: ["this-site"], verified: true },
       { name: "GSAP", usedIn: ["this-site"], verified: true },
     ],

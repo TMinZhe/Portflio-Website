@@ -18,8 +18,8 @@ export function Work() {
           Selected work
         </h2>
         <p className="col-span-full max-w-[44ch] text-ink-2 lg:col-span-4 lg:col-start-9">
-          Most of this work belongs to clients, so the visuals are schematics of what each system does, drawn with
-          synthetic data. No private screens are shown.
+          Most of this work belongs to clients and employers. Real screens appear only once sanitized and approved;
+          everything else is a schematic drawn with synthetic data, and each visual says which it is.
         </p>
       </div>
 
@@ -73,7 +73,11 @@ function Feature({ project: p, n, flip }: { project: Project; n: number; flip: b
             )}
           </div>
           <p className="mt-3 text-[0.8125rem] text-ink-2">
-            {shot ? "The real application, with client details removed." : "Illustrative schematic, synthetic data."}
+            {!shot
+              ? "Illustrative schematic, synthetic data."
+              : shot.isIllustrative
+                ? "Interface recreation of the production application, with synthetic data."
+                : "The real application, with client details removed."}
           </p>
         </a>
       )}
@@ -106,24 +110,23 @@ function Feature({ project: p, n, flip }: { project: Project; n: number; flip: b
           </ul>
         )}
         {stack.length > 0 && <p className="mt-5 text-[0.875rem] text-ink-2">{stack.join(" · ")}</p>}
-        {scope ? (
+        {known(p.outcomeLine) ? (
+          <p className="mt-6 flex gap-2.5 text-[0.9375rem]">
+            <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-lime" />
+            {p.outcomeLine}
+          </p>
+        ) : scope ? (
           <p className="mt-6 flex items-baseline gap-3">
             <span className="font-display text-[clamp(2.5rem,2rem+2vw,3.5rem)] leading-none tracking-[var(--track-display)] text-lime">
               {scope.value}
             </span>
             <span className="max-w-[18ch] text-[0.9375rem]">{scope.label as string}</span>
           </p>
-        ) : (
-          known(p.outcomeLine) && (
-            <p className="mt-6 flex gap-2.5 text-[0.9375rem]">
-              <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-lime" />
-              {p.outcomeLine}
-            </p>
-          )
-        )}
+        ) : null}
         <div className="mt-8">
           <Action href={href} variant="secondary">
             Explore case study
+            <ArrowRight size={16} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
           </Action>
         </div>
       </div>

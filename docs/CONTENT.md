@@ -114,9 +114,22 @@ gallery: [
 4. Only after approval: copy the WebP into `public/images/projects/<slug>/` and set `approved: true`.
 5. Never name the client in copy, alt text, captions or file names.
 
+### Interface recreations (the inventory platform)
+
+When a screen is full of live business data, rebuild it instead of redacting it. The inventory platform does this:
+
+1. Read-only captures go in `Project Screenshots/inventory-platform/originals-PRIVATE/`. They are for reference only and never published.
+2. `Project Screenshots/inventory-platform/recreation/screens.html` rebuilds each layout with synthetic data. Render it to WebP (with no metadata) using `node "Project Screenshots/inventory-platform/recreation/render.mjs"`. The output goes in `recreation/candidates/`.
+3. Review the files in `Project Screenshots/inventory-platform/REVIEW.html`.
+4. To publish:
+   - Copy the approved files into `public/images/projects/inventory-replenishment/`.
+   - Set `APPROVED = true` in `content/case-studies/inventory-platform.ts`.
+   - Recreations are labelled "Interface recreation · synthetic data" automatically (`isIllustrative: true`).
+5. To swap in a real sanitized screenshot later, add the file with its own `projectImage(...)` entry, leave out `isIllustrative`, and it will be labelled as a real application screenshot.
+
 ## Case-study blocks
 
-A project can also use optional blocks (see `content/case-studies/enterprise-risk-management.ts` for a complete example): `headline`, `homeHeadline`, `highlights`, `facts`, `headings`, `workflow` (before/after), `ownership`, `walkthrough` (real screens with does/why/engineering), `deepDives` (with an interactive `demo`, `steps`, `limitations`), `architectureNotes`, `decisions[].basis` ("verified" or "inferred"), `resultsIntro`, `nextSteps`. Interactive demos are registered in `components/showcases/demos.ts` and must use synthetic data.
+A project can also use optional blocks (see `content/case-studies/enterprise-risk-management.ts` for a complete example): `headline`, `homeHeadline`, `highlights`, `facts`, `headings`, `workflow` (before/after), `ownership`, `walkthrough` (real screens with does/why/engineering), `deepDives` (with an interactive `demo`, `steps`, `limitations`), `architectureNotes`, `decisions[].basis` ("verified" or "inferred"), `resultsIntro`, `nextSteps`, `problemFigure` (a static figure under the problem), `architectureFigure` (a bespoke diagram in place of the generic one), `capabilities` (a compact grid after the decisions), and on a deep dive `demoLabel` and `steps.collapsed`. Interactive demos are registered in `components/showcases/demos.ts` and must use synthetic data.
 
 ## About, Toolkit, Beyond Code
 

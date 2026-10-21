@@ -46,20 +46,20 @@ export function DeepDiveBody({ dive }: { dive: DeepDive }) {
       {Demo && (
         <div data-reveal>
           <div className="mb-3">
-            <SchematicLabel>Interactive recreation with synthetic data. Not the client&apos;s system or records.</SchematicLabel>
+            <SchematicLabel>{dive.demoLabel ?? "Interactive recreation with synthetic data. Not the client's system or records."}</SchematicLabel>
           </div>
           <Demo />
         </div>
       )}
       {steps.length > 0 && (
-        <details className="group rounded-[var(--r-md)] bg-graphite" open>
+        <details className="group rounded-[var(--r-md)] bg-graphite" open={!dive.steps!.collapsed}>
           <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-5 font-medium [&::-webkit-details-marker]:hidden">
             {dive.steps!.title}
             <span aria-hidden className="text-[1.25rem] text-ink-2 transition-transform duration-[var(--d-fast)] group-open:rotate-45">
               +
             </span>
           </summary>
-          <ol className="grid gap-x-8 gap-y-3 px-5 pb-6 sm:grid-cols-2">
+          <ol className={`grid gap-x-8 gap-y-3 px-5 pb-6 ${dive.steps!.collapsed ? "" : "sm:grid-cols-2"}`}>
             {steps.map((s, i) => (
               <li key={s} className="flex gap-3 text-[0.9375rem]">
                 <span className="t-meta w-6 shrink-0 pt-0.5 text-ice">{i + 1}</span>

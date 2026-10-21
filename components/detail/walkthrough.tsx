@@ -5,6 +5,7 @@ import { Maximize2 } from "lucide-react";
 import type { WalkthroughItem } from "@/content/types";
 import { MediaFrame } from "@/components/media/media-frame";
 import { Lightbox } from "@/components/media/lightbox";
+import { MediaKind } from "@/components/media/media-kind";
 
 type Item = Omit<WalkthroughItem, "does" | "why" | "engineering"> & { does: string; why: string; engineering?: string };
 
@@ -32,7 +33,10 @@ export function Walkthrough({ items }: { items: Item[] }) {
                   <Maximize2 size={12} aria-hidden /> Enlarge
                 </span>
               </button>
-              {it.media.caption && <figcaption className="mt-2.5 text-[0.8125rem] text-ink-2">{it.media.caption}</figcaption>}
+              <figcaption className="mt-2.5 space-y-1">
+                <MediaKind media={it.media} />
+                {it.media.caption && <span className="block text-[0.8125rem] text-ink-2">{it.media.caption}</span>}
+              </figcaption>
             </figure>
             <div className="mt-6 grid gap-x-8 gap-y-3 md:grid-cols-[minmax(0,1.2fr)_1fr]">
               <div>

@@ -18,9 +18,9 @@ export const experience: Experience[] = [
     responsibilities: [todo("Your main responsibilities, one outcome-oriented line each")],
     contributions: [
       {
-        title: "Inventory forecasting and replenishment",
-        work: "Built the replenishment engine behind forecasting, top-up recommendations and purchase-order generation for 13 retail stores.",
-        technologies: ["Node.js", "Express", "MariaDB"],
+        title: "Inventory & Retail Operations Platform",
+        work: "Developed the majority of the production platform that runs warehouse stock, replenishment, purchasing and reporting for 13 automated stores, including its statistical forecast and offline-tolerant store delivery.",
+        technologies: ["React", "Node.js", "Express", "MySQL"],
         project: "inventory-replenishment",
       },
       {
@@ -40,9 +40,9 @@ export const experience: Experience[] = [
         project: "vision-advertising",
       },
     ],
-    technologies: ["Node.js", "Express", "MariaDB", "SQL", todo("LLM and computer-vision stack — confirm")],
+    technologies: ["React", "Node.js", "Express", "MySQL", "SQL", todo("LLM and computer-vision stack — confirm")],
     lessons: [todo("What was hard about the role, how you approached unfamiliar problems, what you learned")],
-    outcomes: [{ kind: "scope", value: "13", label: "retail stores on the replenishment platform" }],
+    outcomes: [{ kind: "scope", value: "13", label: "automated stores operated from the inventory platform" }],
     gallery: [],
   },
   {

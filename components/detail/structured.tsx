@@ -136,3 +136,18 @@ export function OutcomeList({ outcomes }: { outcomes: Outcome[] }) {
     </div>
   );
 }
+
+/** Supporting capabilities: a compact numbered grid, lighter than a feature list. */
+export function CapabilityGrid({ items }: { items: Feature[] }) {
+  return (
+    <ul className="grid gap-px overflow-hidden rounded-[var(--r-md)] bg-line sm:grid-cols-2 lg:grid-cols-3">
+      {items.map((f, i) => (
+        <li key={f.name} data-reveal className="bg-void p-5">
+          <p className="t-meta text-ice">{String(i + 1).padStart(2, "0")}</p>
+          <h3 className="mt-3 text-[1.0625rem] font-medium">{f.name}</h3>
+          <p className="mt-1.5 text-[0.9375rem] text-ink-2">{f.what as string}</p>
+        </li>
+      ))}
+    </ul>
+  );
+}

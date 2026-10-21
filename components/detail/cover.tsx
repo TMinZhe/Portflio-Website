@@ -3,6 +3,7 @@ import { visibleMedia } from "@/lib/content";
 import { showcases } from "@/components/showcases";
 import { previews } from "@/components/showcases/previews";
 import { MediaFrame } from "@/components/media/media-frame";
+import { MediaKind } from "@/components/media/media-kind";
 import { SchematicLabel } from "@/components/ui/schematic-label";
 import { ExpandingStage } from "@/components/sections/expanding-stage";
 
@@ -25,7 +26,10 @@ export function DetailCover({ cover, showcase, allowStill = true }: Props) {
         <div className="rounded-[var(--r-lg)] bg-[#e9edf3] p-2 sm:p-3">
           <MediaFrame media={media} sizes="(min-width: 1520px) 1440px, 100vw" eager className="bg-white" />
         </div>
-        {media.caption && <figcaption className="mt-3 text-[0.9375rem] text-ink-2">{media.caption}</figcaption>}
+        <figcaption className="mt-3 space-y-1">
+          <MediaKind media={media} />
+          {media.caption && <span className="block text-[0.9375rem] text-ink-2">{media.caption}</span>}
+        </figcaption>
       </figure>
     );
   }

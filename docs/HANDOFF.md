@@ -1,5 +1,25 @@
 # Session handoff — read this first
 
+## 0a. Inventory flagship case study (2026-10-21)
+
+- **Content:** `content/case-studies/inventory-platform.ts` (slug unchanged: `inventory-replenishment`). It is the first featured project.
+- **Sources:** the audit in `Projects Audit/Inventory Replenishment Audit/Inventory.md`, plus the owner's confirmations:
+  - the core-module commits are theirs;
+  - 13 stores may be published;
+  - production forecast constants must not be published.
+- **Demos:** in `components/showcases/inventory/`. Each has a pure model with node tests in the session scratchpad. They are:
+  - offline delivery simulator
+  - forecast explorer (demo policy only)
+  - stock placement
+  - COGS ledger
+  - architecture diagram
+  - store topology
+  - homepage still
+- **Template additions:** `problemFigure`, `architectureFigure`, `capabilities`, `demoLabel`, `steps.collapsed`, and the `MediaKind` badge (real screenshot vs interface recreation).
+- **Screens:** seven synthetic recreations await approval. See `Project Screenshots/inventory-platform/REVIEW.html` and docs/CONTENT.md. Until `APPROVED = true`, production shows the still preview and hides the walkthrough.
+- **QA:** `node scripts/qa/inventory-qa.mjs qa-out/inventory` against a server on :3123. It covers 4 widths, every demo, and reduced motion.
+- **Unused now:** `ops-console*` (the old inventory showcase) is no longer referenced by any project.
+
 ## 0. Latest (2026-10-20, supersedes the sections below where they conflict)
 
 - **Homepage restructure (2026-10-21):** Hero → Selected work (3 featured, still previews in `components/showcases/previews.tsx`) → Experience → About → Technical toolkit → Beyond code → Contact, then `SiteFooter` (holds Reduce effects) on every site page. Strata section and `interim.tsx` removed. Nav: Work · Experience · About · Contact; Résumé hidden until `links.resume.href` is set. `/projects` index added. Public lists use `publishedProjects()` / `publishedExperience()` (no drafts even in dev). Inventory simulator now lives only on its project page.

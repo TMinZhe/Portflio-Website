@@ -198,7 +198,16 @@ export type WalkthroughItem = {
 };
 
 /** Interactive synthetic demonstrations, registered in components/showcases/demos.ts. */
-export type DemoKey = "risk-matrix" | "signoff-workflow" | "audit-timeline";
+export type DemoKey =
+  | "risk-matrix"
+  | "signoff-workflow"
+  | "audit-timeline"
+  | "store-topology"
+  | "offline-delivery"
+  | "forecast-explorer"
+  | "stock-placement"
+  | "cogs-ledger"
+  | "inventory-architecture";
 
 /** An engineering highlight with its own section, optional demo and steps. */
 export type DeepDive = {
@@ -208,8 +217,10 @@ export type DeepDive = {
   heading: string;
   intro: Text[];
   demo?: DemoKey;
-  /** Ordered mechanism, e.g. an algorithm's steps. */
-  steps?: { title: string; items: Text[] };
+  /** Disclosure shown above the demo; defaults to the client-recreation label. */
+  demoLabel?: string;
+  /** Ordered mechanism, e.g. an algorithm's steps. Starts open unless collapsed. */
+  steps?: { title: string; items: Text[]; collapsed?: boolean };
   /** What the current implementation does not do yet. */
   limitations?: Text[];
 };
@@ -223,6 +234,7 @@ export type ProjectSectionId =
   | "walkthrough"
   | "architecture"
   | "decisions"
+  | "capabilities"
   | "challenges"
   | "results"
   | "next-steps"
@@ -233,7 +245,7 @@ export type ProjectSectionId =
 /* ---------- Projects ---------- */
 
 /** The schematic used for a project: interactive on its page, a still preview on the homepage. */
-export type Showcase = "ops-console" | "text-to-sql" | "rag-pipeline" | "risk-matrix" | "detection-frame" | "none";
+export type Showcase = "ops-console" | "store-sync" | "text-to-sql" | "rag-pipeline" | "risk-matrix" | "detection-frame" | "none";
 
 export type Project = {
   slug: string;
@@ -273,6 +285,8 @@ export type Project = {
   /** Original workflow, why it mattered, constraints, stakeholders. */
   problem: Text[];
   workflow?: WorkflowCompare;
+  /** A static figure under the problem, e.g. a topology sketch. */
+  problemFigure?: DemoKey;
   /** Areas of work owned, rendered under My role. */
   ownership?: Feature[];
   solution?: Text;
@@ -283,7 +297,11 @@ export type Project = {
   architectureNotes?: Feature[];
   technologies: Text[];
   architecture?: ArchitectureData;
+  /** A bespoke architecture figure, used instead of the generic diagram. */
+  architectureFigure?: DemoKey;
   decisions: EngineeringDecision[];
+  /** Supporting capabilities, shown compactly after the decisions. */
+  capabilities?: Feature[];
   challenges: EngineeringChallenge[];
   outcomes: Outcome[];
   /** Short framing above the outcomes. */
