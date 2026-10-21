@@ -148,6 +148,18 @@ body::after {
   }
 }
 
+/* Scroll reveal on detail pages (components/detail/reveal.tsx). Content is
+   only held back once the observer is running and full effects are on. */
+html[data-effects="full"][data-reveal] [data-reveal] {
+  transition:
+    opacity var(--d-slow) var(--ease-out-expo),
+    transform var(--d-slow) var(--ease-out-expo);
+}
+html[data-effects="full"][data-reveal] [data-reveal]:not([data-in]) {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
 /* Reduced effects: anything marked as decorative motion is switched off */
 html[data-effects="reduced"] *,
 html[data-effects="reduced"] *::before,

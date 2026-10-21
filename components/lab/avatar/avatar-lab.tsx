@@ -7,7 +7,7 @@ import { ScrollTrigger, useGSAP } from "@/lib/motion/gsap";
 import { useEffects } from "@/lib/hooks/use-effects";
 import { useDeviceTier } from "@/lib/hooks/use-device";
 import { avatarStore, clock, type FramingKey } from "./avatar-store";
-import { XbotAvatar } from "./xbot-avatar";
+import { MyAvatar } from "./my-avatar";
 import { FaceRigCanvas } from "./face-rig";
 import type { CueName, Gesture } from "./director";
 
@@ -128,7 +128,7 @@ export function AvatarLab() {
           </Link>
           <p className="font-display text-[1rem]">Digital Me, interaction prototype</p>
           <p className="ml-auto rounded-[var(--r-xs)] border border-dashed border-[var(--c-warn)]/60 px-2 py-0.5 text-[0.8125rem] text-[var(--c-warn)]">
-            Placeholder character (Mixamo X Bot), not your avatar
+            Your avatar (wave is your Mixamo clip; other gestures are placeholders)
           </p>
         </div>
       </header>
@@ -148,7 +148,7 @@ export function AvatarLab() {
             <directionalLight position={[-2.5, 3.5, 3]} intensity={2.6} color="#eef1ff" />
             <directionalLight position={[2.5, 2, -2.5]} intensity={2.4} color="#8caeff" />
             <Suspense fallback={null}>
-              <XbotAvatar fadeTarget={fadeRef} onReady={() => setReady(true)} />
+              <MyAvatar fadeTarget={fadeRef} onReady={() => setReady(true)} />
             </Suspense>
           </Canvas>
         ) : (

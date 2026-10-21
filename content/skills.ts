@@ -9,17 +9,17 @@ export const skillDomains: SkillDomain[] = [
     id: "ai",
     name: "AI and machine learning",
     skills: [
-      { name: "Large language models", usedIn: ["llm-rag", "unistop"], verified: true },
-      { name: "Retrieval-augmented generation", usedIn: ["llm-rag", "unistop"], verified: true },
-      { name: "Computer vision", usedIn: ["vision-advertising", "unistop"], verified: true },
+      { name: "Large language models", usedIn: ["llm-rag", "nl-analytics-assistant", "unistop-tech"], verified: true },
+      { name: "Retrieval-augmented generation", usedIn: ["llm-rag", "unistop-tech"], verified: true },
+      { name: "Computer vision", usedIn: ["vision-advertising", "unistop-tech"], verified: true },
     ],
   },
   {
     id: "enterprise",
     name: "Enterprise and business systems",
     skills: [
-      { name: "Microsoft Power Apps", usedIn: ["risk-management", "8pi"], verified: true },
-      { name: "Inventory and purchasing workflows", usedIn: ["inventory-top-up", "unistop"], verified: true },
+      { name: "Microsoft Power Apps", usedIn: ["enterprise-risk-management", "8pi-bizsolutions"], verified: true },
+      { name: "Inventory and purchasing workflows", usedIn: ["inventory-replenishment", "unistop-tech"], verified: true },
     ],
   },
   {

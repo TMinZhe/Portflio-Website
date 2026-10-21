@@ -4,13 +4,15 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffects } from "@/lib/hooks/use-effects";
 import { ease } from "@/lib/motion/tokens";
+import type { ShowcaseProps } from "./index";
 import { MAX_DAY, STORES, grid, type Cell } from "./ops-console-model";
 
 /**
  * Inventory showcase: an interactive schematic of store-wide monitoring,
  * top-up recommendations and purchase-order drafting, on synthetic data.
  */
-export function OpsConsole() {
+export function OpsConsole({ headingLevel = 4 }: ShowcaseProps) {
+  const H = `h${headingLevel}` as const;
   const [day, setDay] = useState(0);
   const [order, setOrder] = useState<{ day: number; lines: Cell[] } | null>(null);
   const effects = useEffects();
@@ -60,7 +62,7 @@ export function OpsConsole() {
       <div className="min-w-0 bg-[var(--c-graphite)] p-3 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h4 className="font-display text-[1.25rem] tracking-[-0.02em]">Stock across stores</h4>
+            <H className="font-display text-[1.25rem] tracking-[-0.02em]">Stock across stores</H>
             <p className="mt-1 text-[0.875rem] text-ink-2">Units on hand per item. Cells outlined in lime need a top-up.</p>
           </div>
           <dl className="flex gap-5 sm:text-right" aria-live="polite">
@@ -138,7 +140,7 @@ export function OpsConsole() {
       </div>
 
       {/* Purchase order */}
-      <PurchaseOrder order={order} stale={stale} reduced={effects === "reduced"} />
+      <PurchaseOrder order={order} stale={stale} reduced={effects === "reduced"} H={H} />
     </div>
   );
 }
@@ -195,7 +197,17 @@ function StockCell({ cell }: { cell: Cell }) {
   );
 }
 
-function PurchaseOrder({ order, stale, reduced }: { order: { day: number; lines: Cell[] } | null; stale: boolean; reduced: boolean }) {
+function PurchaseOrder({
+  order,
+  stale,
+  reduced,
+  H,
+}: {
+  order: { day: number; lines: Cell[] } | null;
+  stale: boolean;
+  reduced: boolean;
+  H: "h2" | "h3" | "h4";
+}) {
   const bySku = useMemo(() => {
     if (!order) return [];
     const m = new Map<string, Cell[]>();
@@ -207,7 +219,7 @@ function PurchaseOrder({ order, stale, reduced }: { order: { day: number; lines:
   return (
     <section aria-label="Purchase order draft" className="flex min-h-[22rem] flex-col bg-[#12181e] p-4 sm:p-6">
       <div className="flex items-baseline justify-between">
-        <h4 className="font-display text-[1.25rem] tracking-[-0.02em]">Purchase order</h4>
+        <H className="font-display text-[1.25rem] tracking-[-0.02em]">Purchase order</H>
         <span className="t-meta">{order ? `Draft, day ${order.day}` : "Not drafted"}</span>
       </div>
 

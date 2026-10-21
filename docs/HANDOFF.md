@@ -1,5 +1,19 @@
 # Session handoff — read this first
 
+## 0. Latest (2026-10-20, supersedes the sections below where they conflict)
+
+- **Avatar is live on the homepage.** `components/three/avatar-stage.tsx` + `avatar-scene.tsx` replaced the monolith in `components/sections/opening.tsx`, reusing `components/lab/avatar/my-avatar.tsx`. The monolith files remain but are unused.
+- **Detail pages track** (plan: `C:\Users\minzh\.claude\plans\pasted-content-id-ccdb-master-compressed-alpaca.md`). Phase 1 (audit + content model) and Phase 2 (templates, media system, one pilot pair) are **done and awaiting the user's visual review**. Next: Phase 3 (homepage Work/Experience redesign), then Phase 5 (remaining pages).
+  - Routes: `app/(site)/projects/[slug]`, `app/(site)/experience/[slug]`, `app/sitemap.ts`, `app/robots.ts`, `proxy.ts` (real 404 for unknown/hidden/prod-draft slugs; streamed pages can't change status after the shell).
+  - Content rules and selectors: `lib/content.ts` (`isRoutable`: published, or draft in dev). Model: `content/types.ts`. Guide for the owner: `docs/CONTENT.md`; media: `public/images/README.md`.
+  - Components: `components/detail/*` (hero, body + TOC + progress, structured lists, architecture diagram, cover, related nav, reveal), `components/media/*` (frame with fallback, gallery, lightbox), `components/showcases/index.ts` (registry, `headingLevel` prop).
+  - Published pilot: `inventory-replenishment` + `unistop-tech`. Everything else is draft/hidden until the owner reviews.
+  - QA: `node scripts/qa/detail-qa.mjs <out>` against the dev server (uses installed Chrome via `CHANNEL`, default `chrome`). Fixture for the gallery: `/lab/media-qa` (synthetic cards in `public/lab/media-qa/`).
+  - Gotchas: Next 16 `cacheComponents` + `partialPrefetching` flags reading `params` outside Suspense; detail pages export `instant = false` (all slugs are prerendered, so blocking is free). `next/image` `priority` is deprecated; use `loading`/`fetchPriority`. SVGs go through `unoptimized`.
+- Owner decisions on record: titles AI Engineer (Unistop), Software Developer (8pi), Quality Intern (Collins); facts in the master brief are confirmed; drafts are dev-only.
+
+---
+
 Last updated: 2026-10-20. Paused partway through **Phase 1 (foundation + visual checkpoint)**, before the user's visual approval.
 
 ## 1. Where things stand

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { EffectsToggle } from "./effects-toggle";
 
@@ -20,6 +21,9 @@ export function Nav({ mark, resumeHref }: Props) {
   const [scrolled, setScrolled] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  // Section links are in-page anchors on the homepage and full links elsewhere.
+  const home = usePathname() === "/";
+  const to = (id: string) => (home ? `#${id}` : `/#${id}`);
 
   // Active section: whichever tracked section crosses the upper third of the viewport.
   useEffect(() => {
@@ -68,13 +72,13 @@ export function Nav({ mark, resumeHref }: Props) {
       }`}
     >
       <a
-        href="#work"
+        href={home ? "#work" : "#content"}
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-10 focus:rounded-[var(--r-sm)] focus:bg-lime focus:px-4 focus:py-2 focus:text-[var(--c-lime-ink)]"
       >
-        Skip to projects
+        {home ? "Skip to projects" : "Skip to content"}
       </a>
       <nav aria-label="Primary" className="shell flex h-[var(--nav-h)] items-center gap-6">
-        <a href="#top" className="font-display text-[1.0625rem] font-medium tracking-[-0.02em]" aria-label={`${mark}, back to top`}>
+        <a href={home ? "#top" : "/"} className="font-display text-[1.0625rem] font-medium tracking-[-0.02em]" aria-label={home ? `${mark}, back to top` : `${mark}, home`}>
           {mark}
         </a>
 
@@ -82,7 +86,7 @@ export function Nav({ mark, resumeHref }: Props) {
           {sections.map((s) => (
             <li key={s.id}>
               <a
-                href={`#${s.id}`}
+                href={to(s.id)}
                 aria-current={active === s.id ? "true" : undefined}
                 className="relative block px-3 py-2 text-[0.9375rem] text-ink-2 transition-colors duration-[var(--d-fast)] hover:text-ink aria-[current]:text-ink"
               >
@@ -130,7 +134,7 @@ export function Nav({ mark, resumeHref }: Props) {
             {sections.map((s) => (
               <li key={s.id} className="border-b border-line">
                 <a
-                  href={`#${s.id}`}
+                  href={to(s.id)}
                   onClick={() => setOpen(false)}
                   className="block py-4 font-display text-[2rem] tracking-[-0.03em]"
                 >

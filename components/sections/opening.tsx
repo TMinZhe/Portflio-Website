@@ -1,8 +1,8 @@
 import { profile } from "@/content/profile";
-import { experience } from "@/content/experience";
+import { routableExperience } from "@/lib/content";
 import { T } from "@/components/ui/content-text";
 import { Action } from "@/components/ui/action";
-import { MonolithStage } from "@/components/three/monolith-stage";
+import { AvatarStage } from "@/components/three/avatar-stage";
 import { OpeningScroll } from "./opening-scroll";
 import { formatMonth } from "@/lib/format";
 
@@ -10,41 +10,46 @@ import { formatMonth } from "@/lib/format";
 const strata = [
   {
     layer: 3,
-    name: "Interface",
-    line: "Screens people trust with real work.",
-    evidence: "Power Apps screens for raising, managing and assigning risks.",
+    name: "01 / EXPERIENCE",
+    line: "Built for real-world challenges.",
+    evidence:
+      "From enterprise risk management to inventory operations, I develop applications that support real business workflows.",
   },
   {
     layer: 2,
-    name: "Logic",
-    line: "Rules that encode how a business decides.",
-    evidence: "Stock top-up recommendations that turn into draft purchase orders.",
+    name: "02 / ENGINEERING",
+    line: "From requirements to working systems.",
+    evidence:
+      "I translate business needs into functional software, connecting interfaces, application logic, and data.",
   },
   {
     layer: 1,
-    name: "Data",
-    line: "Records that stay accountable.",
-    evidence: "An audit trail for every risk; stock monitored across every store.",
+    name: "03 / INTELLIGENCE",
+    line: "Making data useful, not just available.",
+    evidence:
+      "I build solutions that support better decisions through stock recommendations, retrieval-augmented AI, and computer vision.",
   },
   {
     layer: 0,
-    name: "Models & services",
-    line: "Models that read, retrieve and see.",
-    evidence: "LLM features grounded with retrieval, and computer vision for advertising.",
+    name: "04 / MINDSET",
+    line: "Curious by nature. Practical by design.",
+    evidence:
+      "I approach engineering with a focus on understanding the problem, making thoughtful trade-offs, and building something people can actually use.",
   },
 ];
 
 /**
- * Scene A + B. The monolith sits in a sticky layer behind two blocks of content:
- * the hero (identity, first viewport) and the transformation (the stack explodes
- * while the four strata are explained). Content is plain, readable HTML; motion
+ * Scene A + B. The avatar sits in a sticky layer behind two blocks of content:
+ * the hero (identity, first viewport) and the transformation (the four strata
+ * are walked through). Content is plain, readable HTML; motion
  * only enhances it.
  */
 export function Opening() {
+  const currentRoles = routableExperience().filter((e) => e.end === "present");
   return (
     <div id="top" data-opening className="relative">
       <div className="sticky top-0 -mb-[100svh] h-svh overflow-hidden">
-        <MonolithStage />
+        <AvatarStage />
       </div>
 
       {/* Scene A — hero */}
@@ -79,8 +84,8 @@ export function Opening() {
           <aside aria-label="Current roles" className="col-span-full self-end lg:col-span-3 lg:col-start-10">
             <p className="mb-3 text-[0.875rem] text-ink-2">Currently</p>
             <ul className="divide-y divide-line border-y border-line">
-              {experience.map((e) => (
-                <li key={e.id} className="flex items-baseline justify-between gap-4 py-3">
+              {currentRoles.map((e) => (
+                <li key={e.slug} className="flex items-baseline justify-between gap-4 py-3">
                   <span>
                     <span className="block text-[0.9375rem] font-medium">{e.organisation}</span>
                     <span className="text-[0.875rem] text-ink-2">{e.role}</span>
@@ -102,15 +107,15 @@ export function Opening() {
         <div className="sticky top-0 flex h-svh items-end lg:items-center lg:pt-[var(--nav-h)]">
           <div className="shell grid-12 pb-8 lg:pb-0">
             <div className="col-span-full rounded-[var(--r-md)] bg-[linear-gradient(to_top,var(--c-void)_60%,transparent)] pt-10 lg:col-span-5 lg:bg-none lg:pt-0">
-              <h2 id="stack-title" className="t-h2 max-w-[18ch]">
-                Good software is a stack of decisions.
+              <h2 id="stack-title" className="t-h2 max-w-[24ch]">
+                I build systems that turn complex problems into practical solutions.
               </h2>
               <ol className="mt-6 max-w-[40rem] md:mt-8" data-strata>
                 {strata.map((s) => (
                   <li
                     key={s.name}
                     data-layer={s.layer}
-                    className="group grid grid-cols-[7.5rem_1fr] gap-x-4 border-t border-line py-2.5 transition-opacity duration-[var(--d-base)] md:py-3 [[data-js]_&]:opacity-55 [[data-js]_&[data-active]]:opacity-100"
+                    className="group grid grid-cols-[9.5rem_1fr] gap-x-4 border-t border-line py-2.5 transition-opacity duration-[var(--d-base)] md:py-3 [[data-js]_&]:opacity-55 [[data-js]_&[data-active]]:opacity-100"
                   >
                     <span className="t-meta pt-1 group-data-[active]:text-lime!">{s.name}</span>
                     <span>

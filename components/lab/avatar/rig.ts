@@ -67,13 +67,15 @@ export class LookRig {
     this.layers = layers.map((l) => ({ ...l, curYaw: 0, curPitch: 0 }));
   }
 
-  static mixamo(get: (n: string) => THREE.Object3D | undefined) {
+  /** @param range scales the torso / neck / head limits (1 = full natural range) */
+  static mixamo(get: (n: string) => THREE.Object3D | undefined, range = 1) {
     const b = (n: string) => get(`mixamorig${n}`) ?? get(`mixamorig:${n}`);
     const eyes = [b("LeftEye"), b("RightEye")].filter(Boolean) as THREE.Object3D[];
+    const r = (d: number) => deg(d) * range;
     return new LookRig([
-      { bones: [b("Spine2")!], yaw: deg(10), pitch: deg(5), halfLife: 0.6, share: 0.18, engageAbove: 0.6 },
-      { bones: [b("Neck")!], yaw: deg(20), pitch: deg(12), halfLife: 0.3, share: 0.3 },
-      { bones: [b("Head")!], yaw: deg(35), pitch: deg(20), halfLife: 0.22, share: 0.52 },
+      { bones: [b("Spine2")!], yaw: r(10), pitch: r(5), halfLife: 0.6, share: 0.18, engageAbove: 0.6 },
+      { bones: [b("Neck")!], yaw: r(20), pitch: r(12), halfLife: 0.3, share: 0.3 },
+      { bones: [b("Head")!], yaw: r(35), pitch: r(20), halfLife: 0.22, share: 0.52 },
       { bones: eyes, yaw: deg(28), pitch: deg(18), halfLife: 0.05, share: 1 },
     ]);
   }

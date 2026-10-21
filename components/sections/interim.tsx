@@ -1,4 +1,4 @@
-import { experience } from "@/content/experience";
+import { experienceHref, isDraft, routableExperience } from "@/lib/content";
 import { skillDomains } from "@/content/skills";
 import { profile } from "@/content/profile";
 import { T } from "@/components/ui/content-text";
@@ -19,17 +19,27 @@ export function ExperienceInterim() {
           Experience
         </h2>
         <ol className="col-span-full border-t border-line lg:col-span-8">
-          {experience.map((e) => (
-            <li key={e.id} className="grid gap-x-8 gap-y-3 border-b border-line py-8 md:grid-cols-[12rem_1fr]">
-              <p className="t-meta">{formatRange(e.start, e.end)}</p>
+          {routableExperience().map((e) => (
+            <li key={e.slug} className="grid gap-x-8 gap-y-3 border-b border-line py-8 md:grid-cols-[12rem_1fr]">
+              <p className="t-meta">
+                {formatRange(e.start, e.end)}
+                {isDraft(e.status) && <span className="ml-2 text-[var(--c-warn)]">draft</span>}
+              </p>
               <div>
                 <h3 className="t-h3">{e.organisation}</h3>
                 <p className="text-ink-2">{e.role}</p>
-                <ul className="mt-4 list-disc space-y-1.5 pl-5 marker:text-ink-2">
-                  {e.contributions.map((c) => (
-                    <li key={c}>{c}</li>
+                <p className="mt-4 max-w-[56ch]">{e.summary}</p>
+                <ul className="mt-3 list-disc space-y-1.5 pl-5 text-ink-2 marker:text-ink-2">
+                  {e.contributions.slice(0, 3).map((c) => (
+                    <li key={c.title}>{c.title}</li>
                   ))}
                 </ul>
+                <a
+                  href={experienceHref(e)}
+                  className="mt-5 inline-flex min-h-11 items-center text-[0.9375rem] underline decoration-line-strong underline-offset-4 hover:decoration-lime"
+                >
+                  View experience
+                </a>
               </div>
             </li>
           ))}

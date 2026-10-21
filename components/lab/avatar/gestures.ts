@@ -43,7 +43,7 @@ export type GestureSpec = {
   /** Where to look, and how strongly that overrides the cursor. */
   gaze?: (c: GestureCtx) => { target: THREE.Vector3; weight: number };
   face?: FaceTargets;
-  /** Use the skeleton's own clip of this name (additive) instead of IK. */
+  /** Play the avatar's own clip of this name (blended over idle by the envelope) instead of IK. */
   clip?: string;
 };
 
@@ -56,24 +56,22 @@ const LOOSE: Curl = { index: 0.45, others: 0.85, thumb: 0.3 };
 const towardViewer = (c: GestureCtx, w = 1) => ({ target: c.viewer, weight: w });
 
 export const GESTURES: Record<Gesture, GestureSpec> = {
+  // The owner's own Mixamo "Waving" clip (avatar/Waving.fbx), blended over idle.
   wave: {
-    duration: 2.1,
-    right: ({ t, anchors }) => {
-      const sway = Math.sin(t * Math.PI * 2 * 1.9) * 0.075;
-      const target = add(anchors.shoulderR, -0.2 + sway, 0.28, 0.14);
-      return { target, aim: add(target, sway * 1.5, 0.3, 0.04), curl: OPEN };
-    },
-    head: ({ t }) => ({ z: 0.07 * Math.min(1, t * 2) }),
+    duration: 4.7,
+    fadeIn: 0.5,
+    fadeOut: 0.6,
+    clip: "wave",
+    head: ({ t }) => ({ z: 0.05 * Math.min(1, t * 2) }),
     gaze: (c) => towardViewer(c, 0.9),
     face: { smile: 0.85, browUp: 0.45, press: 0, lookUp: 0 },
   },
+  // Farewell: the first part of the same clip, faded out early.
   waveSmall: {
-    duration: 1.5,
-    right: ({ t, anchors }) => {
-      const sway = Math.sin(t * Math.PI * 2 * 1.7) * 0.05;
-      const target = add(anchors.shoulderR, -0.1 + sway, 0.24, 0.2);
-      return { target, aim: add(target, sway, 0.3, 0.1), curl: OPEN };
-    },
+    duration: 2.8,
+    fadeIn: 0.45,
+    fadeOut: 0.7,
+    clip: "wave",
     gaze: (c) => towardViewer(c, 0.9),
     face: { smile: 0.7, browUp: 0.2, press: 0, lookUp: 0 },
   },
@@ -125,7 +123,8 @@ export const GESTURES: Record<Gesture, GestureSpec> = {
   },
   nod: {
     duration: 1.3,
-    clip: "agree",
+    // Two downward nods.
+    head: ({ t }) => ({ x: 0.13 * Math.max(0, Math.sin((t / 0.55) * Math.PI)) }),
     gaze: (c) => towardViewer(c, 0.6),
     face: { smile: 0.5, browUp: 0.2, press: 0, lookUp: 0 },
   },
