@@ -99,8 +99,8 @@ export function Lightbox({ items, index, onIndex, onClose }: Props) {
               }}
             >
               <div className={`relative ${zoomed ? "h-[200%] w-[200%]" : "size-full"}`}>
-                {failedSrc === item.src ? (
-                  <MediaFallback label={item.title ?? item.alt} />
+                {failedSrc === item.src || !item.approved ? (
+                  <MediaFallback label={item.title ?? item.alt} pending={!item.approved} />
                 ) : item.type === "video" ? (
                   <video
                     key={item.src}

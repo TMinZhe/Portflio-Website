@@ -1,4 +1,5 @@
 import { todo, type Project } from "./types";
+import { enterpriseRiskManagement } from "./case-studies/enterprise-risk-management";
 
 /**
  * Order here is the order everywhere (homepage, prev/next links).
@@ -81,7 +82,8 @@ export const projects: Project[] = [
   {
     ...empty,
     slug: "nl-analytics-assistant",
-    status: "draft",
+    status: "published",
+    featured: true,
     title: "Natural-Language Analytics Assistant",
     summary: "A self-hosted LLM application that turns natural-language questions into SQL and explains the results.",
     category: "Applied AI",
@@ -92,33 +94,21 @@ export const projects: Project[] = [
     builtLine:
       "Developed a self-hosted LLM application that translates natural-language questions into SQL queries and explains results using sales and inventory records.",
     problemLine: todo("The question users needed answered and why they couldn't before"),
-    technologies: ["SQL", todo("Model, serving stack and framework — confirm")],
-    showcase: "rag-pipeline",
-  },
-  {
-    ...empty,
-    slug: "enterprise-risk-management",
-    status: "draft",
-    title: "Enterprise Risk Management System",
-    summary: "A Power Apps application to raise, track, assign and report on enterprise risks.",
-    category: "Enterprise application",
-    organisation: "8pi BizSolutions",
-    client: "GuocoLand",
-    confidential: true,
-    experience: ["8pi-bizsolutions"],
-    role: todo("Your role and scope"),
-    builtLine:
-      "Developed a Power Apps-based enterprise risk management application with risk tracking, officer assignment, automated notifications and reporting.",
-    features: [
-      { name: "Risk creation and tracking", what: "Raise risks and manage them through their life." },
-      { name: "Risk officer assignment", what: "Assign risk officers to each risk." },
-      { name: "Automated notifications", what: "Assignments and notifications sent automatically with Power Automate." },
-      { name: "Reporting", what: "Reports produced with Excel VBA." },
-      { name: "Audit trail", what: "A record of changes to each risk." },
+    overview: [
+      "A self-hosted LLM application for asking questions about sales and inventory in plain language. It translates each question into a SQL query and explains the results.",
+      todo("Who uses it, and what they did before it existed"),
     ],
-    technologies: ["Microsoft Power Apps", "Power Automate", "Excel VBA"],
-    showcase: "risk-lifecycle",
+    features: [
+      { name: "Plain-language questions", what: "People ask about sales and inventory in their own words instead of writing SQL." },
+      { name: "Text-to-SQL", what: "Each question is translated into a SQL query over the sales and inventory records." },
+      { name: "Explained results", what: "The results come back with an explanation, not just a table." },
+      { name: "Self-hosted model", what: "The language model runs self-hosted.", why: todo("Why self-hosting: data privacy, cost, control") },
+    ],
+    // TODO decisions: how generated SQL is kept safe (read-only access, validation), model choice.
+    technologies: ["SQL", todo("Model, serving stack and framework — confirm")],
+    showcase: "text-to-sql",
   },
+  enterpriseRiskManagement,
   {
     ...empty,
     slug: "vision-advertising",

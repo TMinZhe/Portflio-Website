@@ -3,13 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import { EffectsToggle } from "./effects-toggle";
 
 export const sections = [
   { id: "work", label: "Work" },
   { id: "experience", label: "Experience" },
   { id: "about", label: "About" },
-  { id: "skills", label: "Skills" },
   { id: "contact", label: "Contact" },
 ] as const;
 
@@ -103,10 +101,7 @@ export function Nav({ mark, resumeHref }: Props) {
         </ul>
 
         <div className="ml-auto flex items-center gap-2 lg:ml-2">
-          <span className="hidden lg:block">
-            <EffectsToggle />
-          </span>
-          <ResumeLink href={resumeHref} />
+          {resumeHref && <ResumeLink href={resumeHref} />}
           <button
             ref={toggleRef}
             type="button"
@@ -143,27 +138,19 @@ export function Nav({ mark, resumeHref }: Props) {
               </li>
             ))}
           </ul>
-          <div className="mt-auto flex items-center justify-between gap-4">
-            <EffectsToggle />
-          </div>
+          {resumeHref && (
+            <div className="mt-auto">
+              <ResumeLink href={resumeHref} />
+            </div>
+          )}
         </div>
       )}
     </header>
   );
 }
 
-function ResumeLink({ href }: { href: string | null }) {
-  if (!href) {
-    return (
-      <span
-        aria-disabled="true"
-        title="Résumé not uploaded yet"
-        className="inline-flex min-h-11 cursor-not-allowed items-center rounded-[var(--r-sm)] border border-dashed border-line-strong px-4 text-[0.875rem] text-ink-2"
-      >
-        Résumé<span className="sr-only"> (not available yet)</span>
-      </span>
-    );
-  }
+/** Shown only once a résumé PDF exists (profile.links.resume.href). */
+function ResumeLink({ href }: { href: string }) {
   return (
     <a
       href={href}

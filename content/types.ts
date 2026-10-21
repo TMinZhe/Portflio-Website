@@ -119,6 +119,11 @@ export type ArchitectureData = {
 /** Decision → Reason → Trade-off → Result. */
 export type EngineeringDecision = {
   decision: string;
+  /**
+   * verified = the reasoning is documented (audit or owner confirmation).
+   * inferred = a reading of the design; labelled as such on the page.
+   */
+  basis?: "verified" | "inferred";
   reason: Text;
   tradeoff?: Text;
   result?: Text;
@@ -178,9 +183,57 @@ export type Experience = {
   gallery: PortfolioMedia[];
 };
 
+/* ---------- Case-study blocks (all optional on a project) ---------- */
+
+/** Before/after process, drawn as two rows of steps. Always labelled illustrative. */
+export type WorkflowCompare = { before: string[]; after: string[]; note?: Text };
+
+/** One real screen in the walkthrough: what it does, why it matters, and how it works. */
+export type WalkthroughItem = {
+  media: PortfolioMedia;
+  title: string;
+  does: Text;
+  why: Text;
+  engineering?: Text;
+};
+
+/** Interactive synthetic demonstrations, registered in components/showcases/demos.ts. */
+export type DemoKey = "risk-matrix" | "signoff-workflow" | "audit-timeline";
+
+/** An engineering highlight with its own section, optional demo and steps. */
+export type DeepDive = {
+  id: string;
+  /** Short name for the table of contents. */
+  label: string;
+  heading: string;
+  intro: Text[];
+  demo?: DemoKey;
+  /** Ordered mechanism, e.g. an algorithm's steps. */
+  steps?: { title: string; items: Text[] };
+  /** What the current implementation does not do yet. */
+  limitations?: Text[];
+};
+
+/** Section ids on a project page, for custom headings. */
+export type ProjectSectionId =
+  | "overview"
+  | "problem"
+  | "role"
+  | "solution"
+  | "walkthrough"
+  | "architecture"
+  | "decisions"
+  | "challenges"
+  | "results"
+  | "next-steps"
+  | "gallery"
+  | "lessons"
+  | "context";
+
 /* ---------- Projects ---------- */
 
-export type Showcase = "ops-console" | "rag-pipeline" | "risk-lifecycle" | "detection-frame" | "none";
+/** The schematic used for a project: interactive on its page, a still preview on the homepage. */
+export type Showcase = "ops-console" | "text-to-sql" | "rag-pipeline" | "risk-matrix" | "detection-frame" | "none";
 
 export type Project = {
   slug: string;
@@ -188,8 +241,20 @@ export type Project = {
   /** Shown as a large editorial feature on the homepage. */
   featured?: boolean;
   title: string;
-  /** One sentence: what it is. */
+  /** One sentence: what it is. Also the meta description. */
   summary: string;
+  /** Hero line under the title. */
+  headline?: string;
+  /** Homepage line under the title (falls back to problemLine). */
+  homeHeadline?: string;
+  /** Up to three engineering highlights for the homepage. */
+  highlights?: string[];
+  /** Hero facts replacing the default meta rows, e.g. Role, Client industry, Status. */
+  facts?: { label: string; value: string }[];
+  /** Homepage outcome line when there is no figure. */
+  outcomeLine?: Text;
+  /** Longer section headings, keyed by section; the TOC keeps the short name. */
+  headings?: Partial<Record<ProjectSectionId, string>>;
   category: string;
   organisation: string | null;
   /** End client, when different from the organisation. */
@@ -207,13 +272,24 @@ export type Project = {
   overview: Text[];
   /** Original workflow, why it mattered, constraints, stakeholders. */
   problem: Text[];
+  workflow?: WorkflowCompare;
+  /** Areas of work owned, rendered under My role. */
+  ownership?: Feature[];
   solution?: Text;
   features: Feature[];
+  walkthrough?: WalkthroughItem[];
+  deepDives?: DeepDive[];
+  /** Explanations under the architecture diagram. */
+  architectureNotes?: Feature[];
   technologies: Text[];
   architecture?: ArchitectureData;
   decisions: EngineeringDecision[];
   challenges: EngineeringChallenge[];
   outcomes: Outcome[];
+  /** Short framing above the outcomes. */
+  resultsIntro?: Text[];
+  /** Current constraints and planned improvements. */
+  nextSteps?: Feature[];
   lessons: Text[];
   /** Interactive schematic used as the cover when there is no approved cover image. */
   showcase: Showcase;

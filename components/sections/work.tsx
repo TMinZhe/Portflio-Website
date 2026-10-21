@@ -1,106 +1,132 @@
-import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import type { Project } from "@/content/types";
-import { homepageProjects, isDraft, known, knownList, projectHref } from "@/lib/content";
-import { SchematicLabel } from "@/components/ui/schematic-label";
+import { featuredProjects, known, knownList, projectHref, publishedProjects } from "@/lib/content";
 import { Action } from "@/components/ui/action";
-import { showcases } from "@/components/showcases";
+import { previews } from "@/components/showcases/previews";
 import { confirmedOutcomes } from "@/components/detail/structured";
-import { ExpandingStage } from "./expanding-stage";
+import { MediaFrame } from "@/components/media/media-frame";
 
-/** Scene E — selected work. Each project gets its own stage treatment. */
+/** Selected work: up to three featured projects as alternating editorial spreads. */
 export function Work() {
-  const list = homepageProjects();
-  const lead = list.find((p) => p.featured) ?? list[0];
-  const rest = list.filter((p) => p !== lead);
+  const featured = featuredProjects();
+  const more = publishedProjects().length > featured.length;
   return (
     <section id="work" aria-labelledby="work-title" className="relative z-[var(--z-content)] bg-void pt-[var(--section-y)]">
       <div className="shell grid-12 items-end gap-y-6">
         <h2 id="work-title" className="t-h1 col-span-full lg:col-span-7">
           Selected work
         </h2>
-        <p className="col-span-full max-w-[46ch] text-ink-2 lg:col-span-4 lg:col-start-9">
-          Most of this work belongs to clients, so the interactive pieces are schematics of what each system does,
-          rebuilt with synthetic data. No private screens are shown.
+        <p className="col-span-full max-w-[44ch] text-ink-2 lg:col-span-4 lg:col-start-9">
+          Most of this work belongs to clients, so the visuals are schematics of what each system does, drawn with
+          synthetic data. No private screens are shown.
         </p>
       </div>
 
-      {lead && <LeadProject project={lead} />}
+      <div className="mt-[clamp(3rem,7vw,7rem)] space-y-[clamp(5rem,10vw,10rem)]">
+        {featured.map((p, i) => (
+          <Feature key={p.slug} project={p} n={i + 1} flip={i % 2 === 1} />
+        ))}
+      </div>
 
-      {rest.length > 0 && (
-        <div className="shell mt-[var(--section-y)]">
-          <h3 className="t-h3 text-ink-2">More work</h3>
-          <ul className="mt-6 border-t border-line">
-            {rest.map((p) => (
-              <li key={p.slug} className="border-b border-line">
-                <a href={projectHref(p)} className="group grid-12 gap-y-1 py-6">
-                  <span className="t-h3 col-span-full transition-colors group-hover:text-lime md:col-span-4">{p.title}</span>
-                  <span className="col-span-full text-ink-2 md:col-span-5">{p.summary}</span>
-                  <span className="t-meta col-span-full inline-flex items-start gap-2 md:col-span-3 md:justify-end">
-                    {isDraft(p.status) && <span className="text-[var(--c-warn)]">draft</span>}
-                    {p.organisation ?? "Personal"}
-                    <ArrowUpRight size={15} aria-hidden className="shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div className="shell mt-[clamp(4rem,8vw,8rem)]">
+        <Link
+          href="/projects"
+          className="group flex items-center justify-between gap-6 border-y border-line py-6 transition-colors hover:text-lime"
+        >
+          <span className="t-h3">{more ? "View all projects" : "All projects"}</span>
+          <ArrowRight size={22} aria-hidden className="shrink-0 transition-transform group-hover:translate-x-1" />
+        </Link>
+      </div>
     </section>
   );
 }
 
-function LeadProject({ project: p }: { project: Project }) {
-  const Show = showcases[p.showcase];
-  const stack = knownList(p.technologies).slice(0, 3);
-  const outcome = confirmedOutcomes(p.outcomes)[0];
-  const facts = [
-    known(p.problemLine) && { title: "The problem", body: p.problemLine },
-    known(p.builtLine) && { title: "What I built", body: p.builtLine },
-    outcome && { title: "Outcome", body: `${outcome.value ? `${outcome.value} ` : ""}${outcome.label as string}` },
-  ].filter(Boolean) as { title: string; body: string }[];
+function Feature({ project: p, n, flip }: { project: Project; n: number; flip: boolean }) {
+  const Preview = previews[p.showcase];
+  // A real, approved screenshot leads when there is one; otherwise the schematic.
+  const shot = p.cover && p.cover.approved && p.cover.type === "image" ? p.cover : null;
+  const stack = knownList(p.technologies).slice(0, p.highlights?.length ? 6 : 3);
+  const scope = confirmedOutcomes(p.outcomes).find((o) => o.value && o.kind !== "capability");
+  const href = projectHref(p);
+  const org = [p.organisation, p.client && `for ${p.client}`].filter(Boolean).join(" ");
+  const lead = p.homeHeadline ?? (known(p.problemLine) ? p.problemLine : null);
 
   return (
-    <article aria-labelledby={`p-${p.slug}`} className="mt-[clamp(3rem,6vw,6rem)]">
-      <header className="shell grid-12 gap-y-6">
-        <div className="col-span-full lg:col-span-7">
-          <p className="mb-4 text-[0.9375rem] text-ink-2">
-            {p.category}, {p.organisation}
+    <article aria-labelledby={`p-${p.slug}`} className="shell grid-12 items-center gap-y-8">
+      {(shot || Preview) && (
+        // Duplicate of the title link for pointer users; hidden from keyboard and screen readers.
+        <a
+          href={href}
+          tabIndex={-1}
+          aria-hidden
+          data-reveal
+          className={`group col-span-full block max-lg:order-2 lg:col-span-7 lg:row-start-1 ${flip ? "lg:col-start-6" : "lg:col-start-1"}`}
+        >
+          <div className="transition-transform duration-[var(--d-slow)] ease-[var(--ease-out-expo)] group-hover:-translate-y-1.5">
+            {shot ? (
+              <div className="rounded-[var(--r-md)] bg-[#e9edf3] p-1.5 sm:p-2">
+                <MediaFrame media={shot} sizes="(min-width: 1024px) 55vw, 100vw" fit="contain" className="bg-white" />
+              </div>
+            ) : (
+              Preview && <Preview />
+            )}
+          </div>
+          <p className="mt-3 text-[0.8125rem] text-ink-2">
+            {shot ? "The real application, with client details removed." : "Illustrative schematic, synthetic data."}
           </p>
-          <h3 id={`p-${p.slug}`} className="t-h2 max-w-[18ch]">
+        </a>
+      )}
+
+      <div
+        data-reveal
+        className={`col-span-full lg:col-span-5 lg:row-start-1 ${flip ? "lg:col-start-1 lg:pr-6" : "lg:col-start-8 lg:pl-6"}`}
+      >
+        <p className="t-meta">
+          {String(n).padStart(2, "0")} / {p.category}
+        </p>
+        <h3 id={`p-${p.slug}`} className="mt-4 font-display text-[clamp(2rem,1.4rem+2.2vw,3.25rem)] font-medium leading-[1.02] tracking-[var(--track-heading)]">
+          <a href={href} className="transition-colors hover:text-lime">
             {p.title}
-          </h3>
-          <p className="t-lead mt-5 max-w-[44ch] text-ink">{p.summary}</p>
-        </div>
-        <div className="col-span-full self-end lg:col-span-4 lg:col-start-9">
-          {stack.length > 0 && <p className="mb-5 text-[0.9375rem] text-ink-2">{stack.join(" · ")}</p>}
-          <Action href={projectHref(p)} variant="primary">
-            Explore project
+          </a>
+        </h3>
+        {org && <p className="mt-3 text-ink-2">{org}</p>}
+        {lead && <p className="mt-6 text-[1.1875rem] leading-snug text-ink">{lead}</p>}
+        <p className="mt-4 max-w-[52ch] leading-relaxed text-ink-2">{known(p.builtLine) ? p.builtLine : p.summary}</p>
+        {p.highlights && p.highlights.length > 0 && (
+          <ul className="mt-5 space-y-1.5 text-[0.9375rem]">
+            {p.highlights.slice(0, 3).map((h) => (
+              <li key={h} className="flex gap-2.5">
+                <span aria-hidden className="text-ice">
+                  /
+                </span>
+                {h}
+              </li>
+            ))}
+          </ul>
+        )}
+        {stack.length > 0 && <p className="mt-5 text-[0.875rem] text-ink-2">{stack.join(" · ")}</p>}
+        {scope ? (
+          <p className="mt-6 flex items-baseline gap-3">
+            <span className="font-display text-[clamp(2.5rem,2rem+2vw,3.5rem)] leading-none tracking-[var(--track-display)] text-lime">
+              {scope.value}
+            </span>
+            <span className="max-w-[18ch] text-[0.9375rem]">{scope.label as string}</span>
+          </p>
+        ) : (
+          known(p.outcomeLine) && (
+            <p className="mt-6 flex gap-2.5 text-[0.9375rem]">
+              <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-lime" />
+              {p.outcomeLine}
+            </p>
+          )
+        )}
+        <div className="mt-8">
+          <Action href={href} variant="secondary">
+            Explore case study
           </Action>
         </div>
-      </header>
-
-      {Show && (
-        <ExpandingStage className="mt-12 bg-[radial-gradient(80%_60%_at_20%_0%,rgb(140_174_255/0.08),transparent_60%),var(--c-elevated)] py-[clamp(2rem,5vw,5rem)]">
-          <div className="shell">
-            <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-              <SchematicLabel />
-            </div>
-            <Show />
-          </div>
-        </ExpandingStage>
-      )}
-
-      {facts.length > 0 && (
-        <div className="shell grid-12 mt-12 gap-y-10">
-          {facts.map((f) => (
-            <div key={f.title} className="col-span-full border-t border-line pt-4 md:col-span-4">
-              <h4 className="mb-3 text-[0.9375rem] text-ink-2">{f.title}</h4>
-              <p className="text-[1.0625rem] leading-relaxed">{f.body}</p>
-            </div>
-          ))}
-        </div>
-      )}
+      </div>
     </article>
   );
 }

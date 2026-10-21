@@ -8,6 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const url = (path: string) => new URL(path, profile.siteUrl).toString();
   return [
     { url: url("/"), priority: 1 },
+    { url: url("/projects"), priority: 0.7 },
     ...projects.filter((p) => p.status === "published").map((p) => ({ url: url(`/projects/${p.slug}`), priority: 0.8 })),
     ...experience.filter((e) => e.status === "published").map((e) => ({ url: url(`/experience/${e.slug}`), priority: 0.6 })),
   ];

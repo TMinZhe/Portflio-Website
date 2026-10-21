@@ -60,7 +60,20 @@ export function DecisionList({ decisions }: { decisions: EngineeringDecision[] }
   return (
     <div className="border-b border-line">
       {decisions.map((d, i) => (
-        <Disclosure key={d.decision} summary={d.decision} open={i === 0}>
+        <Disclosure
+          key={d.decision}
+          open={i === 0}
+          summary={
+            <span className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              {d.decision}
+              {d.basis && (
+                <span className={`t-meta ${d.basis === "verified" ? "text-lime" : ""}`}>
+                  {d.basis === "verified" ? "Documented" : "Interpretation"}
+                </span>
+              )}
+            </span>
+          }
+        >
           <Steps
             steps={[
               { label: "Reason", value: d.reason as string },

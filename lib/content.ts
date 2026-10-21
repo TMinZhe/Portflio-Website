@@ -25,7 +25,10 @@ export const visibleMedia = (list: readonly PortfolioMedia[] | undefined) =>
 /* ---------- Projects ---------- */
 
 export const routableProjects = () => projects.filter((p) => isRoutable(p.status));
-export const homepageProjects = routableProjects;
+/** Public lists (homepage, /projects) show published work only, in dev too. */
+export const publishedProjects = () => projects.filter((p) => p.status === "published");
+/** Up to three featured projects for the homepage, in content order. */
+export const featuredProjects = () => publishedProjects().filter((p) => p.featured).slice(0, 3);
 export const getProject = (slug: string) => routableProjects().find((p) => p.slug === slug);
 
 /** Previous and next routable project, wrapping around. */
@@ -41,6 +44,7 @@ export const projectHref = (p: Pick<Project, "slug">) => `/projects/${p.slug}`;
 /* ---------- Experience ---------- */
 
 export const routableExperience = () => experience.filter((e) => isRoutable(e.status));
+export const publishedExperience = () => experience.filter((e) => e.status === "published");
 export const getExperience = (slug: string) => routableExperience().find((e) => e.slug === slug);
 export const experienceHref = (e: { slug: string }) => `/experience/${e.slug}`;
 
@@ -49,3 +53,19 @@ export const projectsForExperience = (slug: string) => routableProjects().filter
 
 export const experienceForProject = (p: Project) =>
   routableExperience().filter((e) => p.experience.includes(e.slug));
+
+/* ---------- Evidence links (Technical Toolkit) ---------- */
+
+export type Evidence = { href: string; label: string; kind: "project" | "role" | "site" };
+
+/** Resolves skill `usedIn` slugs to public links; unpublished entries are skipped. */
+export function resolveEvidence(slugs: string[], siteHref: string | null): Evidence[] {
+  return slugs.flatMap((slug): Evidence[] => {
+    if (slug === "this-site") return siteHref ? [{ href: siteHref, label: "This portfolio", kind: "site" }] : [];
+    const p = publishedProjects().find((x) => x.slug === slug);
+    if (p) return [{ href: projectHref(p), label: p.title, kind: "project" }];
+    const e = publishedExperience().find((x) => x.slug === slug);
+    if (e) return [{ href: experienceHref(e), label: e.organisation, kind: "role" }];
+    return [];
+  });
+}

@@ -2,6 +2,8 @@
 
 ## 0. Latest (2026-10-20, supersedes the sections below where they conflict)
 
+- **Homepage restructure (2026-10-21):** Hero → Selected work (3 featured, still previews in `components/showcases/previews.tsx`) → Experience → About → Technical toolkit → Beyond code → Contact, then `SiteFooter` (holds Reduce effects) on every site page. Strata section and `interim.tsx` removed. Nav: Work · Experience · About · Contact; Résumé hidden until `links.resume.href` is set. `/projects` index added. Public lists use `publishedProjects()` / `publishedExperience()` (no drafts even in dev). Inventory simulator now lives only on its project page.
+
 - **Avatar is live on the homepage.** `components/three/avatar-stage.tsx` + `avatar-scene.tsx` replaced the monolith in `components/sections/opening.tsx`, reusing `components/lab/avatar/my-avatar.tsx`. The monolith files remain but are unused.
 - **Detail pages track** (plan: `C:\Users\minzh\.claude\plans\pasted-content-id-ccdb-master-compressed-alpaca.md`). Phase 1 (audit + content model) and Phase 2 (templates, media system, one pilot pair) are **done and awaiting the user's visual review**. Next: Phase 3 (homepage Work/Experience redesign), then Phase 5 (remaining pages).
   - Routes: `app/(site)/projects/[slug]`, `app/(site)/experience/[slug]`, `app/sitemap.ts`, `app/robots.ts`, `proxy.ts` (real 404 for unknown/hidden/prod-draft slugs; streamed pages can't change status after the shell).

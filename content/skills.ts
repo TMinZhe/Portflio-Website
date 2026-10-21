@@ -1,39 +1,64 @@
 import type { SkillDomain } from "./types";
 
 /**
- * Only list skills you can point to evidence for. `usedIn` links a skill to
- * project slugs or experience ids. `verified: false` renders as pending.
+ * The Technical Toolkit. Only list skills you can point to evidence for:
+ * `usedIn` holds project or experience slugs (or "this-site" for this
+ * portfolio's own code). `verified: false` keeps a skill off the page.
  */
 export const skillDomains: SkillDomain[] = [
   {
-    id: "ai",
-    name: "AI and machine learning",
+    id: "languages",
+    name: "Languages",
     skills: [
-      { name: "Large language models", usedIn: ["llm-rag", "nl-analytics-assistant", "unistop-tech"], verified: true },
+      { name: "Python", usedIn: ["collins-aerospace"], verified: true },
+      { name: "SQL", usedIn: ["nl-analytics-assistant", "unistop-tech", "collins-aerospace"], verified: true },
+      { name: "TypeScript", usedIn: ["this-site"], verified: true },
+    ],
+  },
+  {
+    id: "backend",
+    name: "Backend",
+    skills: [
+      { name: "Node.js", usedIn: ["inventory-replenishment", "unistop-tech"], verified: true },
+      { name: "Express", usedIn: ["inventory-replenishment", "unistop-tech"], verified: true },
+    ],
+  },
+  {
+    id: "data",
+    name: "Databases",
+    skills: [{ name: "MariaDB", usedIn: ["inventory-replenishment", "unistop-tech"], verified: true }],
+  },
+  {
+    id: "ai",
+    name: "AI and ML",
+    skills: [
+      { name: "Self-hosted LLMs", usedIn: ["nl-analytics-assistant", "unistop-tech"], verified: true },
+      { name: "Text-to-SQL", usedIn: ["nl-analytics-assistant", "unistop-tech"], verified: true },
       { name: "Retrieval-augmented generation", usedIn: ["llm-rag", "unistop-tech"], verified: true },
       { name: "Computer vision", usedIn: ["vision-advertising", "unistop-tech"], verified: true },
     ],
   },
   {
     id: "enterprise",
-    name: "Enterprise and business systems",
+    name: "Enterprise automation",
     skills: [
       { name: "Microsoft Power Apps", usedIn: ["enterprise-risk-management", "8pi-bizsolutions"], verified: true },
-      { name: "Inventory and purchasing workflows", usedIn: ["inventory-replenishment", "unistop-tech"], verified: true },
+      { name: "Power Fx", usedIn: ["enterprise-risk-management", "8pi-bizsolutions"], verified: true },
+      { name: "SharePoint", usedIn: ["enterprise-risk-management", "8pi-bizsolutions"], verified: true },
+      // Not verified by the ERM audit: the reminder flow's deployment is unconfirmed.
+      { name: "Power Automate", usedIn: [], verified: false },
+      { name: "Excel VBA", usedIn: ["enterprise-risk-management", "8pi-bizsolutions"], verified: true },
+      { name: "Outlook automation", usedIn: ["collins-aerospace"], verified: true },
+      { name: "Power BI", usedIn: ["enterprise-risk-management", "8pi-bizsolutions"], verified: true },
     ],
-  },
-  {
-    id: "data",
-    name: "Data and BI",
-    skills: [{ name: "Power BI", usedIn: [], verified: false }],
   },
   {
     id: "frontend",
     name: "Frontend",
     skills: [
       // Evidence: this site's own source code.
-      { name: "TypeScript", usedIn: ["this-site"], verified: true },
       { name: "React and Next.js", usedIn: ["this-site"], verified: true },
+      { name: "Tailwind CSS", usedIn: ["this-site"], verified: true },
       { name: "Three.js / React Three Fiber", usedIn: ["this-site"], verified: true },
       { name: "GSAP", usedIn: ["this-site"], verified: true },
     ],

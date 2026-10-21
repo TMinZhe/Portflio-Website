@@ -7,7 +7,9 @@ All copy lives in `content/`. Pages are built from it; you never need to touch a
 | `content/profile.ts` | Name, tagline, intro, links, site URL |
 | `content/projects.ts` | Every project, in display order |
 | `content/experience.ts` | Every role, newest first |
-| `content/skills.ts` | Skills, each linked to the projects/roles that prove it |
+| `content/skills.ts` | The Technical Toolkit: skills by domain, each linked to the projects/roles that prove it |
+| `content/about.ts` | The About paragraphs |
+| `content/beyond.ts` | Beyond Code: entrepreneurship and leadership |
 | `content/media.ts` | Helpers for image paths |
 | `content/types.ts` | The shape of all of the above (your editor autocompletes from it) |
 
@@ -60,7 +62,9 @@ What each field becomes on the page:
 
 **Architecture diagram**: list `nodes` (with `kind` data / service / client / external / output, an optional `tech`, and a grid position `col`, `row`: columns read left to right in the direction data flows) and `edges` (`from` → `to`). On phones it flips to top-to-bottom automatically. Only include components you can confirm.
 
-**Featured / order**: the order of the array is the order everywhere. `featured: true` makes a project the large lead on the homepage.
+**Featured / order**: the order of the array is the order everywhere. Up to three published projects with `featured: true` appear in Selected work on the homepage; every published project is listed at `/projects`.
+
+**Homepage visual**: `showcase` picks the schematic. Its still preview is in `components/showcases/previews.tsx` (homepage); the interactive version, where one exists, is in `components/showcases/index.ts` (project page).
 
 ## Add a role
 
@@ -101,6 +105,28 @@ gallery: [
 - **`alt`** says what the image shows, for someone who can't see it. Use `""` only for purely decorative images.
 - Videos: `.mp4`/`.webm`, with `poster` (an image path), and `captionsSrc` (a `.vtt` file) or `transcript` if there is speech.
 - A missing or broken file shows a quiet "image unavailable" panel, never a broken-image icon.
+
+## Client screenshots (confidential work)
+
+1. Keep originals in `Project Screenshots/` (git-ignored, never under `public/`).
+2. Make a sanitized copy: paint over or replace names, emails, client-specific risk data, financial figures and identifiers with solid fills or clearly fictional text (no blur), and save as a fresh WebP so no metadata carries over. Drafts go in `Project Screenshots/ERM sanitized drafts/`.
+3. Reference the file in content with `approved: false`. Pending screenshots are never requested by the browser; in dev they show an "awaiting approval" panel, in production they and their walkthrough entries are omitted.
+4. Only after approval: copy the WebP into `public/images/projects/<slug>/` and set `approved: true`.
+5. Never name the client in copy, alt text, captions or file names.
+
+## Case-study blocks
+
+A project can also use optional blocks (see `content/case-studies/enterprise-risk-management.ts` for a complete example): `headline`, `homeHeadline`, `highlights`, `facts`, `headings`, `workflow` (before/after), `ownership`, `walkthrough` (real screens with does/why/engineering), `deepDives` (with an interactive `demo`, `steps`, `limitations`), `architectureNotes`, `decisions[].basis` ("verified" or "inferred"), `resultsIntro`, `nextSteps`. Interactive demos are registered in `components/showcases/demos.ts` and must use synthetic data.
+
+## About, Toolkit, Beyond Code
+
+- **About** (`content/about.ts`): one string per paragraph. The first is set large. Paragraphs still marked `todo(...)` are not shown.
+- **Toolkit** (`content/skills.ts`): each skill lists `usedIn` slugs; selecting it on the homepage shows those projects/roles (published ones only). `"this-site"` links to your GitHub. `verified: false` keeps a skill off the page.
+- **Beyond Code** (`content/beyond.ts`): `kind`, `title`, `role`, `detail`, optional `href`. Unconfirmed `role`/`detail` are hidden.
+
+## Résumé and contact
+
+Put the PDF at `public/resume.pdf` and set `links.resume.href` to `"/resume.pdf"` in `content/profile.ts`. Until then every résumé button is hidden. The email, GitHub and LinkedIn in `profile.ts` drive the Contact section.
 
 ## Technologies
 

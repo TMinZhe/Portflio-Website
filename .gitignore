@@ -42,3 +42,6 @@ next-env.d.ts
 
 # QA screenshots
 /qa-out/
+
+# Private client screenshots (originals and sanitized drafts). Never commit.
+/Project Screenshots/

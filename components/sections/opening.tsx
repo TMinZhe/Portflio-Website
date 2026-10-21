@@ -1,51 +1,17 @@
 import { profile } from "@/content/profile";
-import { routableExperience } from "@/lib/content";
+import { publishedExperience } from "@/lib/content";
 import { T } from "@/components/ui/content-text";
 import { Action } from "@/components/ui/action";
 import { AvatarStage } from "@/components/three/avatar-stage";
 import { OpeningScroll } from "./opening-scroll";
 import { formatMonth } from "@/lib/format";
 
-/** Layers, top of the stack first. Evidence lines only restate the owner's described work. */
-const strata = [
-  {
-    layer: 3,
-    name: "01 / EXPERIENCE",
-    line: "Built for real-world challenges.",
-    evidence:
-      "From enterprise risk management to inventory operations, I develop applications that support real business workflows.",
-  },
-  {
-    layer: 2,
-    name: "02 / ENGINEERING",
-    line: "From requirements to working systems.",
-    evidence:
-      "I translate business needs into functional software, connecting interfaces, application logic, and data.",
-  },
-  {
-    layer: 1,
-    name: "03 / INTELLIGENCE",
-    line: "Making data useful, not just available.",
-    evidence:
-      "I build solutions that support better decisions through stock recommendations, retrieval-augmented AI, and computer vision.",
-  },
-  {
-    layer: 0,
-    name: "04 / MINDSET",
-    line: "Curious by nature. Practical by design.",
-    evidence:
-      "I approach engineering with a focus on understanding the problem, making thoughtful trade-offs, and building something people can actually use.",
-  },
-];
-
 /**
- * Scene A + B. The avatar sits in a sticky layer behind two blocks of content:
- * the hero (identity, first viewport) and the transformation (the four strata
- * are walked through). Content is plain, readable HTML; motion
- * only enhances it.
+ * The hero: identity, positioning and current roles over the avatar. Content
+ * is plain, readable HTML; motion only enhances it.
  */
 export function Opening() {
-  const currentRoles = routableExperience().filter((e) => e.end === "present");
+  const currentRoles = publishedExperience().filter((e) => e.end === "present");
   return (
     <div id="top" data-opening className="relative">
       <div className="sticky top-0 -mb-[100svh] h-svh overflow-hidden">
@@ -68,9 +34,11 @@ export function Opening() {
               <Action href="#work" variant="primary">
                 View work
               </Action>
-              <Action href={profile.links.resume.href} pendingNote="Résumé not uploaded yet" download>
-                Résumé
-              </Action>
+              {profile.links.resume.href && (
+                <Action href={profile.links.resume.href} download>
+                  Résumé
+                </Action>
+              )}
               <span className="mx-1 hidden h-6 w-px bg-line-strong xs:block" aria-hidden />
               <Action href={profile.links.github.href} variant="quiet" external>
                 GitHub
@@ -95,38 +63,6 @@ export function Opening() {
               ))}
             </ul>
           </aside>
-        </div>
-      </section>
-
-      {/* Scene B — transformation */}
-      <section
-        aria-labelledby="stack-title"
-        data-transform
-        className="relative z-[var(--z-content)] min-h-[220svh] md:min-h-[300svh]"
-      >
-        <div className="sticky top-0 flex h-svh items-end lg:items-center lg:pt-[var(--nav-h)]">
-          <div className="shell grid-12 pb-8 lg:pb-0">
-            <div className="col-span-full rounded-[var(--r-md)] bg-[linear-gradient(to_top,var(--c-void)_60%,transparent)] pt-10 lg:col-span-5 lg:bg-none lg:pt-0">
-              <h2 id="stack-title" className="t-h2 max-w-[24ch]">
-                I build systems that turn complex problems into practical solutions.
-              </h2>
-              <ol className="mt-6 max-w-[40rem] md:mt-8" data-strata>
-                {strata.map((s) => (
-                  <li
-                    key={s.name}
-                    data-layer={s.layer}
-                    className="group grid grid-cols-[9.5rem_1fr] gap-x-4 border-t border-line py-2.5 transition-opacity duration-[var(--d-base)] md:py-3 [[data-js]_&]:opacity-55 [[data-js]_&[data-active]]:opacity-100"
-                  >
-                    <span className="t-meta pt-1 group-data-[active]:text-lime!">{s.name}</span>
-                    <span>
-                      <span className="block text-[1rem] font-medium md:text-[1.125rem]">{s.line}</span>
-                      <span className="mt-1 hidden text-[0.9375rem] text-ink-2 sm:block">{s.evidence}</span>
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </div>
         </div>
       </section>
 

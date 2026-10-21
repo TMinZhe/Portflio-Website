@@ -39,8 +39,9 @@ export function MediaFrame({ media, sizes, fit, controls = true, eager, classNam
       className={`relative overflow-hidden rounded-[var(--r-md)] bg-graphite ${className}`}
       style={{ aspectRatio: media.aspect ?? "16/10" }}
     >
-      {failed ? (
-        <MediaFallback label={media.title ?? media.alt} />
+      {/* Unapproved media is never requested: it may not exist in /public yet. */}
+      {failed || !media.approved ? (
+        <MediaFallback label={media.title ?? media.alt} pending={!media.approved} />
       ) : media.type === "video" ? (
         controls ? (
           <video
@@ -95,12 +96,12 @@ export function MediaTags({ media }: { media: PortfolioMedia }) {
   );
 }
 
-export function MediaFallback({ label }: { label?: string }) {
+export function MediaFallback({ label, pending }: { label?: string; pending?: boolean }) {
   return (
-    <div className="absolute inset-0 grid place-items-center p-6 text-center">
+    <div className="absolute inset-0 grid place-items-center bg-graphite p-6 text-center">
       <p className="max-w-[32ch] text-[0.875rem] text-ink-2">
         {label ? `${label}: ` : ""}
-        image unavailable
+        {pending ? "screenshot awaiting approval" : "image unavailable"}
       </p>
     </div>
   );

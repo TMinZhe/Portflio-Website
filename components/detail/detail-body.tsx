@@ -5,6 +5,8 @@ import { RevealObserver } from "./reveal";
 export type DetailSection = {
   id: string;
   title: string;
+  /** Longer heading shown in the section; `title` stays the TOC label. */
+  heading?: string;
   /** null or false = nothing confirmed to say; the section is left out entirely. */
   body: ReactNode;
 };
@@ -54,9 +56,18 @@ export function DetailBody({ sections }: { sections: DetailSection[] }) {
           >
             <div className="mb-8 flex items-baseline gap-4">
               <span className="t-meta w-8 shrink-0">{pad(i + 1)}</span>
-              <h2 id={`${s.id}-title`} className="t-h3">
-                {s.title}
-              </h2>
+              {s.heading ? (
+                <div>
+                  <p className="t-meta">{s.title}</p>
+                  <h2 id={`${s.id}-title`} className="t-h3 mt-2 max-w-[26ch]">
+                    {s.heading}
+                  </h2>
+                </div>
+              ) : (
+                <h2 id={`${s.id}-title`} className="t-h3">
+                  {s.title}
+                </h2>
+              )}
             </div>
             <div className="md:pl-12">{s.body}</div>
           </section>

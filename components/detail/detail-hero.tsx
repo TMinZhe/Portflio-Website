@@ -8,6 +8,8 @@ type Props = {
   back: { href: string; label: string };
   eyebrow: string;
   title: string;
+  /** Optional line between the title and the summary. */
+  headline?: string;
   summary: string;
   meta: Meta[];
   chips?: string[];
@@ -18,7 +20,7 @@ type Props = {
 };
 
 /** Opening of a project or experience page: identity left, facts right. */
-export function DetailHero({ back, eyebrow, title, summary, meta, chips, figure, actions, draft }: Props) {
+export function DetailHero({ back, eyebrow, title, headline, summary, meta, chips, figure, actions, draft }: Props) {
   return (
     <header className="shell grid-12 gap-y-10 pt-[calc(var(--nav-h)+clamp(2rem,6vh,4.5rem))]">
       <div className="col-span-full lg:col-span-8">
@@ -32,7 +34,8 @@ export function DetailHero({ back, eyebrow, title, summary, meta, chips, figure,
         </a>
         <p className="t-meta mt-8">{eyebrow}</p>
         <h1 className="t-h1 mt-4 max-w-[18ch]">{title}</h1>
-        <p className="t-lead mt-6 max-w-[52ch] text-ink">{summary}</p>
+        {headline && <p className="t-h3 mt-6 max-w-[30ch] text-ink">{headline}</p>}
+        <p className="t-lead mt-5 max-w-[56ch] text-ink">{summary}</p>
         {actions && <div className="mt-8 flex flex-wrap gap-3">{actions}</div>}
       </div>
 
