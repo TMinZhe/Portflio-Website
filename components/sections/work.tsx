@@ -1,40 +1,36 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { Project } from "@/content/types";
-import { featuredProjects, known, knownList, projectHref, publishedProjects } from "@/lib/content";
-import { Action } from "@/components/ui/action";
+import { featuredProjects, knownList, projectHref, publishedProjects } from "@/lib/content";
 import { previews } from "@/components/showcases/previews";
-import { confirmedOutcomes } from "@/components/detail/structured";
 import { MediaFrame } from "@/components/media/media-frame";
+import { MediaKind } from "@/components/media/media-kind";
+import { WorkShowcase } from "./work-showcase";
 
-/** Selected work: up to three featured projects as alternating editorial spreads. */
+/*
+ * Selected work: the featured projects as a horizontal showcase. Each card
+ * says what was built, why it matters and one proof point, then links to the
+ * case study; everything else lives there.
+ */
 export function Work() {
   const featured = featuredProjects();
-  const more = publishedProjects().length > featured.length;
+  const others = publishedProjects().filter((p) => !featured.includes(p));
+  const inDev = others.filter((p) => p.development).length;
+  const note = others.length > 0 && `${others.length} more${inDev ? ` (${inDev === others.length ? "in development" : `${inDev} in development`})` : ""}`;
   return (
-    <section id="work" aria-labelledby="work-title" className="relative z-[var(--z-content)] bg-void pt-[var(--section-y)]">
-      <div className="shell grid-12 items-end gap-y-6">
-        <h2 id="work-title" className="t-h1 col-span-full lg:col-span-7">
-          Selected work
-        </h2>
-        <p className="col-span-full max-w-[44ch] text-ink-2 lg:col-span-4 lg:col-start-9">
-          Most of this work belongs to clients and employers. Real screens appear only once sanitized and approved;
-          everything else is a schematic drawn with synthetic data, and each visual says which it is.
-        </p>
-      </div>
-
-      <div className="mt-[clamp(3rem,7vw,7rem)] space-y-[clamp(5rem,10vw,10rem)]">
+    <section id="work" aria-labelledby="work-title" className="relative z-[var(--z-content)] bg-void">
+      <WorkShowcase items={featured.map((p) => ({ slug: p.slug, label: p.homeCard?.label ?? p.title }))}>
         {featured.map((p, i) => (
-          <Feature key={p.slug} project={p} n={i + 1} flip={i % 2 === 1} />
+          <WorkCard key={p.slug} project={p} n={i + 1} total={featured.length} />
         ))}
-      </div>
+      </WorkShowcase>
 
-      <div className="shell mt-[clamp(4rem,8vw,8rem)]">
-        <Link
-          href="/projects"
-          className="group flex items-center justify-between gap-6 border-y border-line py-6 transition-colors hover:text-lime"
-        >
-          <span className="t-h3">{more ? "View all projects" : "All projects"}</span>
+      <div className="shell mt-[clamp(3rem,6vw,5rem)]">
+        <Link href="/projects" className="group flex items-center justify-between gap-6 border-y border-line py-6 transition-colors hover:text-lime">
+          <span className="t-h3">
+            View all projects
+            {note && <span className="ml-3 align-middle text-[0.9375rem] text-ink-2">{note}</span>}
+          </span>
           <ArrowRight size={22} aria-hidden className="shrink-0 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>
@@ -42,94 +38,102 @@ export function Work() {
   );
 }
 
-function Feature({ project: p, n, flip }: { project: Project; n: number; flip: boolean }) {
+/** Each card gets its own light: a soft glow in a different corner and accent. */
+const GLOWS = [
+  "radial-gradient(70% 60% at 0% 0%, rgb(182 255 59 / 0.07), transparent 70%)",
+  "radial-gradient(70% 60% at 100% 0%, rgb(140 174 255 / 0.09), transparent 70%)",
+  "radial-gradient(70% 60% at 0% 100%, rgb(140 174 255 / 0.07), transparent 70%)",
+  "radial-gradient(70% 60% at 100% 100%, rgb(182 255 59 / 0.07), transparent 70%)",
+];
+
+function WorkCard({ project: p, n, total }: { project: Project; n: number; total: number }) {
+  const c = p.homeCard;
   const Preview = previews[p.showcase];
-  // A real, approved screenshot leads when there is one; otherwise the schematic.
   const shot = p.cover && p.cover.approved && p.cover.type === "image" ? p.cover : null;
-  const stack = knownList(p.technologies).slice(0, p.highlights?.length ? 6 : 3);
-  const scope = confirmedOutcomes(p.outcomes).find((o) => o.value && o.kind !== "capability");
   const href = projectHref(p);
-  const org = [p.organisation, p.client && `for ${p.client}`].filter(Boolean).join(" ");
-  const lead = p.homeHeadline ?? (known(p.problemLine) ? p.problemLine : null);
+  const flip = n % 2 === 0;
+  const tags = (c?.tags ?? knownList(p.technologies)).slice(0, 3);
+  const org = [p.organisation, p.collaboration && `in collaboration with the ${p.collaboration}`].filter(Boolean).join(" · ");
 
   return (
-    <article aria-labelledby={`p-${p.slug}`} className="shell grid-12 items-center gap-y-8">
-      {(shot || Preview) && (
-        // Duplicate of the title link for pointer users; hidden from keyboard and screen readers.
-        <a
-          href={href}
-          tabIndex={-1}
-          aria-hidden
-          data-reveal
-          className={`group col-span-full block max-lg:order-2 lg:col-span-7 lg:row-start-1 ${flip ? "lg:col-start-6" : "lg:col-start-1"}`}
-        >
-          <div className="transition-transform duration-[var(--d-slow)] ease-[var(--ease-out-expo)] group-hover:-translate-y-1.5">
-            {shot ? (
-              <div className="rounded-[var(--r-md)] bg-[#e9edf3] p-1.5 sm:p-2">
-                <MediaFrame media={shot} sizes="(min-width: 1024px) 55vw, 100vw" fit="contain" className="bg-white" />
-              </div>
-            ) : (
-              Preview && <Preview />
-            )}
-          </div>
-          <p className="mt-3 text-[0.8125rem] text-ink-2">
-            {!shot
-              ? "Illustrative schematic, synthetic data."
-              : shot.isIllustrative
-                ? "Interface recreation of the production application, with synthetic data."
-                : "The real application, with client details removed."}
-          </p>
-        </a>
-      )}
-
-      <div
-        data-reveal
-        className={`col-span-full lg:col-span-5 lg:row-start-1 ${flip ? "lg:col-start-1 lg:pr-6" : "lg:col-start-8 lg:pl-6"}`}
+    <li className="work-card">
+      <article
+        aria-labelledby={`p-${p.slug}`}
+        className="@container h-full rounded-[var(--r-lg)] bg-graphite p-4 ring-1 ring-line sm:p-5 xl:p-6"
+        style={{ backgroundImage: GLOWS[(n - 1) % GLOWS.length] }}
       >
-        <p className="t-meta">
-          {String(n).padStart(2, "0")} / {p.category}
+        <p className="t-meta flex flex-wrap gap-x-3 gap-y-1">
+          <span className="text-ink">
+            {String(n).padStart(2, "0")} / {String(total).padStart(2, "0")}
+          </span>
+          <span>{c?.category ?? p.category}</span>
         </p>
-        <h3 id={`p-${p.slug}`} className="mt-4 font-display text-[clamp(2rem,1.4rem+2.2vw,3.25rem)] font-medium leading-[1.02] tracking-[var(--track-heading)]">
-          <a href={href} className="transition-colors hover:text-lime">
-            {p.title}
-          </a>
-        </h3>
-        {org && <p className="mt-3 text-ink-2">{org}</p>}
-        {lead && <p className="mt-6 text-[1.1875rem] leading-snug text-ink">{lead}</p>}
-        <p className="mt-4 max-w-[52ch] leading-relaxed text-ink-2">{known(p.builtLine) ? p.builtLine : p.summary}</p>
-        {p.highlights && p.highlights.length > 0 && (
-          <ul className="mt-5 space-y-1.5 text-[0.9375rem]">
-            {p.highlights.slice(0, 3).map((h) => (
-              <li key={h} className="flex gap-2.5">
-                <span aria-hidden className="text-ice">
-                  /
+
+        <div className="mt-4 grid gap-x-8 gap-y-5 @3xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] @3xl:items-center">
+          <figure className={flip ? "@3xl:order-2" : undefined}>
+            {/* Decorative duplicate of the title link for pointer users. */}
+            <a href={href} tabIndex={-1} aria-hidden className="group block">
+              <div className="work-visual relative aspect-[16/10] overflow-hidden rounded-[var(--r-md)] transition-transform duration-[var(--d-slow)] ease-[var(--ease-out-expo)] group-hover:-translate-y-1">
+                {shot ? (
+                  <div className="h-full rounded-[var(--r-md)] bg-[#e9edf3] p-1.5">
+                    <MediaFrame media={{ ...shot, aspect: "auto" }} sizes="(min-width: 1024px) 45vw, 86vw" fit="contain" eager={n === 1} tags={false} className="h-full bg-white" />
+                  </div>
+                ) : (
+                  Preview && (
+                    <div className="pv-zoom">
+                      <Preview />
+                    </div>
+                  )
+                )}
+              </div>
+            </a>
+            <figcaption className="mt-2.5">
+              {shot ? (
+                <MediaKind media={shot} />
+              ) : (
+                <span className="t-meta inline-flex items-center gap-2 text-[0.6875rem]">
+                  <span aria-hidden className="size-1.5 rounded-full bg-ice" />
+                  {c?.visualNote ?? "Illustrative schematic · synthetic data"}
                 </span>
-                {h}
-              </li>
-            ))}
-          </ul>
-        )}
-        {stack.length > 0 && <p className="mt-5 text-[0.875rem] text-ink-2">{stack.join(" · ")}</p>}
-        {known(p.outcomeLine) ? (
-          <p className="mt-6 flex gap-2.5 text-[0.9375rem]">
-            <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-lime" />
-            {p.outcomeLine}
-          </p>
-        ) : scope ? (
-          <p className="mt-6 flex items-baseline gap-3">
-            <span className="font-display text-[clamp(2.5rem,2rem+2vw,3.5rem)] leading-none tracking-[var(--track-display)] text-lime">
-              {scope.value}
-            </span>
-            <span className="max-w-[18ch] text-[0.9375rem]">{scope.label as string}</span>
-          </p>
-        ) : null}
-        <div className="mt-8">
-          <Action href={href} variant="secondary">
-            Explore case study
-            <ArrowRight size={16} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
-          </Action>
+              )}
+            </figcaption>
+          </figure>
+
+          <div>
+            <h3 id={`p-${p.slug}`} className="font-display text-[clamp(1.75rem,1.2rem+1.3vw,2.75rem)] font-medium leading-[1.02] tracking-[var(--track-heading)]">
+              <a href={href} className="transition-colors hover:text-lime">
+                {p.title}
+              </a>
+            </h3>
+            {org && <p className="mt-2 text-[0.9375rem] text-ink-2">{org}</p>}
+            <p data-copy className="mt-3 text-[1.125rem] leading-snug">{c?.headline ?? p.homeHeadline ?? p.summary}</p>
+            {c?.summary && <p data-copy className="mt-3 max-w-[52ch] text-[0.9375rem] leading-normal text-ink-2">{c.summary}</p>}
+            {tags.length > 0 && (
+              <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Key technologies">
+                {tags.map((t) => (
+                  <li key={t} className="rounded-[var(--r-xs)] border border-line-strong px-2 py-1 text-[0.8125rem]">
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {c?.proof && (
+              <p data-copy className="mt-4 flex gap-2.5 text-[0.9375rem]">
+                <span aria-hidden className="mt-2 size-1.5 shrink-0 rounded-full bg-lime" />
+                {c.proof}
+              </p>
+            )}
+            <a
+              href={href}
+              className="group/cta mt-4 inline-flex min-h-11 items-center gap-2 rounded-[var(--r-sm)] border border-line-strong px-4 text-[0.9375rem] font-medium transition-colors hover:border-lime hover:text-lime"
+            >
+              {p.ctaLabel ?? "Explore case study"}
+              <span className="sr-only">: {p.title}</span>
+              <ArrowRight size={16} aria-hidden className="transition-transform group-hover/cta:translate-x-0.5" />
+            </a>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
+    </li>
   );
 }

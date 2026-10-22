@@ -62,7 +62,7 @@ What each field becomes on the page:
 
 **Architecture diagram**: list `nodes` (with `kind` data / service / client / external / output, an optional `tech`, and a grid position `col`, `row`: columns read left to right in the direction data flows) and `edges` (`from` → `to`). On phones it flips to top-to-bottom automatically. Only include components you can confirm.
 
-**Featured / order**: the order of the array is the order everywhere. Up to three published projects with `featured: true` appear in Selected work on the homepage; every published project is listed at `/projects`.
+**Featured / order**: the order of the array is the order everywhere. Up to three published projects with `featured: true` appear in Selected work on the homepage; projects with `moreWork: true` appear below it under More work; every published project is listed at `/projects`.
 
 **Homepage visual**: `showcase` picks the schematic. Its still preview is in `components/showcases/previews.tsx` (homepage); the interactive version, where one exists, is in `components/showcases/index.ts` (project page).
 
@@ -125,9 +125,15 @@ When a screen is full of live business data, rebuild it instead of redacting it.
    - Copy the approved files into `public/images/projects/inventory-replenishment/`.
    - Set `APPROVED = true` in `content/case-studies/inventory-platform.ts`.
    - Recreations are labelled "Interface recreation · synthetic data" automatically (`isIllustrative: true`).
+   - When you replace a published image, give it a new version suffix (`-v2` → `-v3`) and update the reference. The image optimizer, browsers and CDNs cache by URL, so reusing a file name keeps showing the old image.
 5. To swap in a real sanitized screenshot later, add the file with its own `projectImage(...)` entry, leave out `isIllustrative`, and it will be labelled as a real application screenshot.
 
 ## Case-study blocks
+
+A project can pick one layout: `story` (business platform, e.g. the inventory platform), `aiStory` (applied AI), `fieldStory` (a physical, field-tested product, e.g. Scantry) or `rdStory` (unfinished work, e.g. Context-Aware Digital Advertising: five chapters ending in What's next). Without one, the page uses the generic sections below.
+
+**Work in progress** (`rdStory`): give each pipeline stage in `rdStory.stages` a `status` of `"implemented"`, `"in-development"` or `"planned"`, and change it as work progresses; only `"implemented"` may be described as working. Set `development` (`label`, `stage`, `updated`) to show the In development badge on the homepage card, the hero and `/projects`, and bump `updated` when you edit. `collaboration` names an industry collaborator (shown as "Industry collaboration: …"); `ctaLabel` changes the card's button text.
+
 
 A project can also use optional blocks (see `content/case-studies/enterprise-risk-management.ts` for a complete example): `headline`, `homeHeadline`, `highlights`, `facts`, `headings`, `workflow` (before/after), `ownership`, `walkthrough` (real screens with does/why/engineering), `deepDives` (with an interactive `demo`, `steps`, `limitations`), `architectureNotes`, `decisions[].basis` ("verified" or "inferred"), `resultsIntro`, `nextSteps`, `problemFigure` (a static figure under the problem), `architectureFigure` (a bespoke diagram in place of the generic one), `capabilities` (a compact grid after the decisions), and on a deep dive `demoLabel` and `steps.collapsed`. Interactive demos are registered in `components/showcases/demos.ts` and must use synthetic data.
 

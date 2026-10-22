@@ -43,7 +43,7 @@ export type DeliveryAction =
   | { type: "run-worker" }
   | { type: "reset" };
 
-const SAMPLE_DELIVERIES: Deltas[] = [{ "P-12": 4, "P-07": 2 }, { "P-03": 3 }, { "P-12": 1, "P-03": 2 }];
+const SAMPLE_DELIVERIES: Deltas[] = [{ "P-12": 4 }, { "P-03": 3 }, { "P-12": 1, "P-03": 2 }];
 const BASE_BACKOFF = 5;
 const MAX_BACKOFF = 60;
 const fmt = (d: Deltas) => Object.entries(d).map(([p, n]) => `+${n} → ${p}`).join(", ");

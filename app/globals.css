@@ -169,6 +169,87 @@ html[data-effects="reduced"] *::after {
   transition-duration: 0.01ms !important;
 }
 
+/* Pedestrians crossing the advertising explorer's scene. Reduced effects stop
+   them at their resting position (inline `left`) instead of jumping to the end. */
+@keyframes ad-walk {
+  from { left: -6%; }
+  to { left: 102%; }
+}
+.ad-walker {
+  animation: ad-walk linear infinite;
+}
+/* A new creative arriving on the explorer's screen. */
+@keyframes ad-swap {
+  from { opacity: 0; transform: scale(1.03); }
+  to { opacity: 1; transform: none; }
+}
+html[data-effects="reduced"] .ad-walker {
+  animation: none !important;
+}
+
+/* ---------- Selected work showcase (components/sections/work-showcase.tsx) ----------
+   Three modes from one DOM, in reading order:
+   - default: a native, snap-scrolling horizontal track (phones, tablets, short screens);
+   - [data-mode="pin"]: desktop with enough height; GSAP pins the section and moves the track;
+   - reduced effects: an ordinary vertical list, no controls. */
+.work-track {
+  /* Positioned, so visually hidden text inside cards stays inside the scroll container. */
+  position: relative;
+  display: flex;
+  gap: clamp(1rem, 2.5vw, 2.5rem);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  /* Line the first card up with the page column (.shell), even on wide screens. */
+  --work-inset: max(var(--gutter), calc((100% - var(--max-w)) / 2 + var(--gutter)));
+  scroll-padding-inline: var(--work-inset);
+  padding-inline: var(--work-inset);
+  padding-bottom: 0.5rem;
+  scrollbar-width: none;
+}
+.work-track::-webkit-scrollbar { display: none; }
+.work-card {
+  flex: 0 0 min(86vw, 36rem);
+  scroll-snap-align: start;
+}
+[data-mode="pin"] .work-track {
+  overflow: visible;
+  scroll-snap-type: none;
+  will-change: transform;
+}
+[data-mode="pin"] .work-card {
+  flex-basis: min(80vw, 76rem);
+}
+/* The card in view leads; neighbours recede slightly while pinned. */
+[data-mode="pin"] .work-card > article {
+  transition: opacity var(--d-slow) var(--ease-out-expo), transform var(--d-slow) var(--ease-out-expo);
+}
+[data-mode="pin"] .work-card:not([data-active]) > article {
+  opacity: 0.45;
+  transform: scale(0.97);
+}
+html[data-effects="reduced"] .work-track {
+  display: grid;
+  overflow: visible;
+  scroll-snap-type: none;
+  max-width: var(--max-w);
+  margin-inline: auto;
+}
+html[data-effects="reduced"] .work-card { flex: none; }
+html[data-effects="reduced"] [data-work-controls] { display: none; }
+
+/* A schematic preview fits its frame: content scales down (zoom) as the frame
+   gets shorter, and optional rows drop out first. */
+.work-visual { container: work-visual / size; }
+.work-visual .pv-zoom { zoom: 1; height: 100%; }
+@container work-visual (max-height: 25rem) {
+  .work-visual .pv-zoom { zoom: 0.86; }
+  .work-visual .pv-optional { display: none; }
+}
+@container work-visual (max-height: 20.5rem) { .work-visual .pv-zoom { zoom: 0.72; } }
+@container work-visual (max-height: 16.5rem) { .work-visual .pv-zoom { zoom: 0.6; } }
+@container work-visual (max-height: 13rem) { .work-visual .pv-zoom { zoom: 0.5; } }
+
 /* ---------- Range input (showcase controls) ---------- */
 .ops-range {
   appearance: none;

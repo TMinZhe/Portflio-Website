@@ -9,8 +9,12 @@
  */
 
 export const DEMO_POLICY = {
-  /** The correction only trusts availability down to this share of days. */
-  minAvailability: 0.4,
+  /** The stockout correction can at most double the observed rate (the audited cap). */
+  maxUplift: 2,
+  /** Days of sales history in the demo window. */
+  windowDays: 14,
+  /** Units counted from any single basket, unless bulk buying recurs. */
+  basketCap: 4,
   /** Days of cover added beyond the next visit. */
   bufferDays: 2,
   /** Minimum units kept on the shelf. */
@@ -40,8 +44,10 @@ export function inverseNormal(p: number): number {
 }
 
 export type ForecastInput = {
-  /** Units sold per calendar day over the window. */
+  /** Everyday units sold per calendar day over the window. */
   observedRate: number;
+  /** One unusually large basket in the window, in units (0 = none). */
+  bulkBasket?: number;
   /** Share of days the product was actually on sale, 0–1. */
   availability: number;
   /** Variance-to-mean ratio of daily sales; 1 = Poisson. */
@@ -68,15 +74,28 @@ export type ForecastResult = {
   recommended: number;
   /** What a plain sales average would target over the same cover, for comparison. */
   naiveTarget: number;
+  /** The top-up that plain average would recommend. */
+  naiveRecommended: number;
+  /** Plain average rate, counting every unit of every basket over calendar days. */
+  naiveRate: number;
   capped: boolean;
+  /** The stockout correction hit its cap. */
+  upliftCapped: boolean;
+  /** Days of demand the full shelf can cover. */
+  shelfDays: number;
 };
 
 export function forecast(i: ForecastInput): ForecastResult {
   const p = DEMO_POLICY;
-  // Sales only happen on in-stock days, so divide by those, not calendar days.
-  const exposure = Math.max(i.availability, p.minAvailability);
-  const demand = i.observedRate / exposure;
-  const uplift = demand / Math.max(i.observedRate, 1e-9);
+  // A one-off bulk basket is counted only up to the basket cap.
+  const bulk = i.bulkBasket ?? 0;
+  const robustRate = i.observedRate + Math.min(bulk, p.basketCap) / p.windowDays;
+  const naiveRate = i.observedRate + bulk / p.windowDays;
+  // Sales only happen on in-stock days, so divide by those, not calendar days,
+  // but never let the correction more than double the observed rate.
+  const rawUplift = 1 / Math.max(i.availability, 1e-9);
+  const uplift = Math.min(rawUplift, p.maxUplift);
+  const demand = robustRate * uplift;
   // Never assume less variability than a Poisson process.
   const variance = Math.max(i.dispersion, 1) * demand;
   const z = inverseNormal(i.serviceLevel);
@@ -89,10 +108,11 @@ export function forecast(i: ForecastInput): ForecastResult {
   const reorderPoint = clamp(rawReorder, p.minFacing, target);
   const triggered = i.currentStock < reorderPoint;
   const recommended = triggered ? Math.max(0, target - i.currentStock) : 0;
+  const naiveTarget = clamp(Math.ceil(naiveRate * P), p.minFacing, i.shelfCapacity);
 
   return {
     demand,
-    uplift: i.observedRate > 0 ? uplift : 1,
+    uplift,
     variance,
     z,
     coverDays: P,
@@ -101,8 +121,12 @@ export function forecast(i: ForecastInput): ForecastResult {
     safetyStock: Math.max(0, target - Math.ceil(demand * P)),
     triggered,
     recommended,
-    naiveTarget: clamp(Math.ceil(i.observedRate * P), p.minFacing, i.shelfCapacity),
+    naiveTarget,
+    naiveRecommended: Math.max(0, naiveTarget - i.currentStock),
+    naiveRate,
     capped: rawTarget > i.shelfCapacity,
+    upliftCapped: rawUplift > p.maxUplift + 1e-9,
+    shelfDays: demand > 0 ? i.shelfCapacity / demand : Infinity,
   };
 }
 

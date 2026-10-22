@@ -29,7 +29,8 @@ const SLUG = "inventory-replenishment";
  * Flip APPROVED only after the owner has reviewed every file, then copy the
  * files from "Project Screenshots/inventory-platform/recreation/candidates".
  */
-const APPROVED = false;
+// Approved by the owner on 2026-10-22 after reviewing REVIEW.html.
+const APPROVED = true;
 const recreation = (file: string, meta: Pick<PortfolioMedia, "alt" | "title">): PortfolioMedia =>
   projectImage(SLUG, file, {
     ...meta,
@@ -49,6 +50,15 @@ export const inventoryPlatform: Project = {
   organisation: "Unistop Tech",
   confidential: true,
   experience: ["unistop-tech"],
+
+  homeCard: {
+    label: "Inventory platform",
+    category: "Full-Stack Engineering / Distributed Systems",
+    headline: "Keeping retail operations reliable, even when stores go offline.",
+    summary: "Developed most of the functionality behind the business's primary production platform, integrating inventory, replenishment, purchasing and reporting across automated retail stores.",
+    proof: "The primary production operations platform, across 13 stores.",
+    tags: ["React", "Node.js", "MySQL"],
+  },
 
   summary:
     "The production platform a chain of automated retail stores runs on: warehouse stock, replenishment, purchasing and reporting, kept correct even when store databases go offline.",
@@ -70,6 +80,71 @@ export const inventoryPlatform: Project = {
   ],
   technologies: ["React", "Node.js", "Express", "MySQL", "JavaScript", "Vite", "Tailwind CSS"],
 
+  story: {
+    headings: {
+      project: "The system a retail chain runs on.",
+      problem: "Every store keeps its own records, and any store can go offline.",
+      platform: "One place to run every store.",
+      solution: "Three problems, three guided demos.",
+      engineering: "For engineers: how it fits together.",
+      impact: "From implementation to daily operations.",
+    },
+    glance: [
+      { label: "The challenge", text: "13 unattended stores, each with its own database, any of which can drop offline at any moment." },
+      {
+        label: "What I built",
+        text: "Most of the platform, including the restocking forecast, offline-safe deliveries to stores, warehouse and purchasing workflows, and financial reports.",
+      },
+      { label: "The outcome", text: "In production as the business's main operations system, used every day to run the stores." },
+    ],
+    problemPoints: [
+      "Head office may be looking at stock figures that are hours old.",
+      "A change sent to a store can fail halfway through.",
+      "Sending the same change twice could add stock that doesn't exist.",
+    ],
+    tourFeatured: ["stock-positions-v2", "top-up-detail-v2", "inventory-sync-v2", "sales-reporting-v2"],
+    tourCaptions: {
+      "stock-positions-v2": "Every shelf position in a store. When a store is offline, it opens from its last known data and says so.",
+      "top-up-detail-v2": "Each recommended delivery, with the numbers behind it: what's on the shelf, the target and the warehouse stock.",
+      "inventory-sync-v2": "Warehouse stock and warnings, with every store's sync status in view.",
+      "sales-reporting-v2": "Sales and revenue by product and store, reconciled to what customers actually paid.",
+      "store-monitoring-v2": "Temperature, cameras and today's sales for each store.",
+      "top-up-lists-v2": "Restocking lists per store, with stores whose data is out of date flagged.",
+      "purchasing-v2": "Purchase orders tracked from order to receipt.",
+    },
+    solutionIntro:
+      "The three hardest problems are below, each as a short guided demo with made-up data. Start with the question, step through it, and open the technical mechanism if you want the detail.",
+    demos: [
+      {
+        id: "delivery",
+        question: "What happens to a stock update when a store is offline?",
+        context: "A delivery to a store can't simply be sent and forgotten: the store may be unreachable, and a message may get lost on the way back.",
+        guided: "guided-delivery",
+        deepDive: "offline-delivery",
+        advancedLabel: "Explore the technical mechanism",
+      },
+      {
+        id: "forecast",
+        question: "How does the system decide how much stock a store needs?",
+        context: "Each restock, it estimates demand from recent sales and fills the shelf to last until the next visit. Pick a scenario to see what changes.",
+        guided: "forecast-guide",
+        deepDive: "forecasting",
+        advancedLabel: "How the production forecast works",
+      },
+      {
+        id: "safety",
+        question: "What if the shelf changes after a delivery is planned?",
+        context: "Plans are made from the last snapshot of a store, which may be out of date by the time the delivery happens.",
+        guided: "shelf-guard",
+        deepDive: "integrity",
+        advancedLabel: "Advanced placement and concurrency",
+      },
+    ],
+    engineeringIntro: "Optional detail for engineers: the architecture, the financial logic, the trade-offs behind the design, and its known limits.",
+    financeDive: "financials",
+    financeLead: "revenue-example",
+  },
+
   headings: {
     problem: "Inventory management becomes harder when every store has its own database.",
     role: "Developing the core of the operational platform.",
@@ -83,8 +158,8 @@ export const inventoryPlatform: Project = {
 
   overview: [],
   problem: [
-    "Each automated store runs its own local MySQL database, which holds the truth about its shelves, positions and sales. The office reaches those databases over a private network, and any of them can be unreachable at a given moment.",
-    "The office platform still has to show stock across every store, plan replenishment, coordinate purchasing and the warehouse, and report on sales. Information read from a store can be hours old, a change sent to a store can fail halfway, and a retried change must never add the same stock twice or overwrite sales that happened in the meantime.",
+    "Each automated store runs its own database, which holds the truth about its shelves and sales. Head office reaches those databases over a private network, and any store can be unreachable at a given moment.",
+    "The platform still has to show stock across every store, plan restocking, run the warehouse and purchasing, and report on sales, without ever corrupting a store's stock count.",
   ],
   problemFigure: "store-topology",
 
@@ -104,7 +179,7 @@ export const inventoryPlatform: Project = {
 
   walkthrough: [
     {
-      media: recreation("stock-positions.webp", {
+      media: recreation("stock-positions-v2.webp", {
         alt: "Rack layout for an offline store opened from its last known data, with a banner explaining that quantity edits are saved as changes and applied when the store reconnects, and inactive positions holding units",
         title: "Stock positions, store offline",
       }),
@@ -114,7 +189,7 @@ export const inventoryPlatform: Project = {
       engineering: "Quantity edits on an offline store are stored as deltas (\"+2\") and delivered when it reconnects; units in an inactive position are held off sale.",
     },
     {
-      media: recreation("store-monitoring.webp", {
+      media: recreation("store-monitoring-v2.webp", {
         alt: "Dashboard with a panel per store showing temperatures, camera feeds and today's sales, one store still being checked",
         title: "Store-wide monitoring",
       }),
@@ -123,7 +198,7 @@ export const inventoryPlatform: Project = {
       why: "The stores are unattended, so this is how the operations team sees them.",
     },
     {
-      media: recreation("top-up-lists.webp", {
+      media: recreation("top-up-lists-v2.webp", {
         alt: "Top-up generation screen with store cache status, two stores flagged with failed syncs, a store picker and recent lists with their delivery state",
         title: "Top-up planning",
       }),
@@ -133,7 +208,7 @@ export const inventoryPlatform: Project = {
       engineering: "Lists record whether they reached the store; recurring warehouse shortages are tracked separately.",
     },
     {
-      media: recreation("top-up-detail.webp", {
+      media: recreation("top-up-detail-v2.webp", {
         alt: "Top-up list detail with, for each product, positions, current quantity, target, shelf capacity, forecast need, trip planned, warehouse allocated and final delivery",
         title: "Top-up recommendations",
       }),
@@ -143,7 +218,7 @@ export const inventoryPlatform: Project = {
       engineering: "Generated lists are locked; the calculation parameters are stored with the list.",
     },
     {
-      media: recreation("inventory-sync.webp", {
+      media: recreation("inventory-sync-v2.webp", {
         alt: "Warehouse inventory table with usable warehouse stock, total stock, pending quantities and warehouse, store and expiry warnings, under a store sync status panel",
         title: "Warehouse inventory",
       }),
@@ -152,7 +227,7 @@ export const inventoryPlatform: Project = {
       why: "Purchasing and replenishment decisions start from one view of stock across the warehouse and stores.",
     },
     {
-      media: recreation("purchasing.webp", {
+      media: recreation("purchasing-v2.webp", {
         alt: "Purchasing overview with completed purchase orders, requested and received quantities and expiry dates",
         title: "Purchasing",
       }),
@@ -161,7 +236,7 @@ export const inventoryPlatform: Project = {
       why: "Received stock enters the warehouse with its cost, tax and deposit fixed at that moment.",
     },
     {
-      media: recreation("sales-reporting.webp", {
+      media: recreation("sales-reporting-v2.webp", {
         alt: "Sales overview with totals for products, units, revenue, stores and refunds, and a ranked list of best-selling products",
         title: "Sales",
       }),
@@ -213,8 +288,6 @@ export const inventoryPlatform: Project = {
         "From there it is a periodic-review policy: a reorder point that covers demand until the next visit at a chosen service level, and an order-up-to target covering the visit interval plus a buffer, bounded by shelf capacity. Products are banded by demand, and each band has its own service level. The list is then limited by warehouse availability and by how many units a trip can carry, with the most urgent products filled first.",
         "This is classical statistics and rule-based optimisation, not machine learning.",
       ],
-      demo: "forecast-explorer",
-      demoLabel: "Interactive demonstration with fictional data and a documented demo policy. Production constants are not shown.",
       steps: {
         title: "The production calculation, step by step",
         items: [
@@ -343,7 +416,7 @@ export const inventoryPlatform: Project = {
 
   showcase: "store-sync",
   // Leads the homepage card and the page once the recreations are approved.
-  cover: recreation("stock-positions.webp", {
+  cover: recreation("stock-positions-v2.webp", {
     alt: "Rack layout for an offline store opened from its last known data, with inactive positions holding units",
     title: "Stock positions, store offline",
   }),

@@ -34,6 +34,10 @@ import { Walkthrough } from "@/components/detail/walkthrough";
 import { DeepDiveBody, WorkflowDiagram } from "@/components/detail/case-study";
 import { PageFooterNav, RelatedCards } from "@/components/detail/related-nav";
 import { demos } from "@/components/showcases/demos";
+import { storySections } from "@/components/detail/story-chapters";
+import { aiStorySections } from "@/components/detail/ai-story-chapters";
+import { fieldStorySections } from "@/components/detail/field-story-chapters";
+import { rdStorySections } from "@/components/detail/rd-story-chapters";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -190,6 +194,8 @@ export default async function ProjectPage({ params }: Props) {
   ];
 
   const org = [p.organisation, p.client && `for ${p.client}`].filter(Boolean).join(" ");
+  // Featured projects return to the homepage showcase; the rest to the full list.
+  const home = p.featured ? { href: "/#work", label: "Selected work" } : { href: "/projects", label: "All projects" };
   const repo = p.links.repo;
   const demo = p.links.demo;
 
@@ -197,7 +203,8 @@ export default async function ProjectPage({ params }: Props) {
     <main id="content">
       <DetailHero
         draft={isDraft(p.status)}
-        back={{ href: "/#work", label: "Selected work" }}
+        status={p.development && `${p.development.label} · ${p.development.stage}`}
+        back={home}
         eyebrow={p.facts ? p.category : [p.category, org].filter(Boolean).join(" · ")}
         title={p.title}
         headline={p.headline}
@@ -227,13 +234,15 @@ export default async function ProjectPage({ params }: Props) {
           )
         }
       />
-      <DetailCover cover={p.cover} showcase={p.showcase} allowStill={!p.deepDives?.some((d) => d.demo === p.showcase)} />
-      <DetailBody sections={sections} />
+      <DetailCover cover={p.cover} showcase={p.showcase} note={p.coverNote} allowStill={!p.deepDives?.some((d) => d.demo === p.showcase)} />
+      <DetailBody
+        sections={p.story ? storySections(p, roles) : p.aiStory ? aiStorySections(p, roles) : p.fieldStory ? fieldStorySections(p, roles) : p.rdStory ? rdStorySections(p, roles) : sections}
+      />
       <PageFooterNav
         kind="project"
         prev={prev && { href: projectHref(prev), title: prev.title }}
         next={next && { href: projectHref(next), title: next.title }}
-        back={{ href: "/#work", label: "Back to selected work" }}
+        back={{ href: home.href, label: `Back to ${home.label.toLowerCase()}` }}
       />
     </main>
   );

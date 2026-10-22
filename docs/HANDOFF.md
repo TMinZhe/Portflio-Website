@@ -16,8 +16,38 @@
   - store topology
   - homepage still
 - **Template additions:** `problemFigure`, `architectureFigure`, `capabilities`, `demoLabel`, `steps.collapsed`, and the `MediaKind` badge (real screenshot vs interface recreation).
-- **Screens:** seven synthetic recreations await approval. See `Project Screenshots/inventory-platform/REVIEW.html` and docs/CONTENT.md. Until `APPROVED = true`, production shows the still preview and hides the walkthrough.
+- **Screens:** seven synthetic recreations, approved by the owner on 2026-10-22 and published from `public/images/projects/inventory-replenishment/`. The review sheet is `Project Screenshots/inventory-platform/REVIEW.html`; the workflow is in docs/CONTENT.md.
 - **QA:** `node scripts/qa/inventory-qa.mjs qa-out/inventory` against a server on :3123. It covers 4 widths, every demo, and reduced motion.
+- **UX refinement (2026-10-22):** the page is now six chapters, rendered by `components/detail/story-chapters.tsx` whenever a project has `story`.
+  - Guided demos: `guided-delivery`, `forecast-guide`, `shelf-guard`, plus the `revenue-example` lead for the financial section.
+  - The earlier demos and all the deep-dive text now sit behind disclosures.
+  - The forecast demo caps the stockout correction at 2×, as audited.
+  - `forecast-explorer` was removed, since its controls now live in the guide's Advanced settings.
+  - QA (49 checks) covers each guided step, every advanced view, and overflow with disclosures open.
+- **AI Operations Assistant (2026-10-22):** `content/case-studies/ai-operations-assistant.ts`, slug `ai-operations-assistant`. It replaced `nl-analytics-assistant` (the old URL now 404s). It is the second featured project.
+  - Layout: six chapters via `aiStory`, rendered by `components/detail/ai-story-chapters.tsx`.
+  - Demos: in `components/showcases/ai-assistant/`, all synthetic, all client-side. They are the chat (scripted engine in `chat-model.ts`), the pipeline stepper, and the engineering visuals.
+  - Owner confirmed: sole developer; in daily production use; now runs Qwen3-30B-A3B INT4. The audited benchmark and device numbers are from the earlier Qwen3-8B setup and are labelled that way.
+  - Never claim RAG, text-to-SQL, a routing accuracy figure, a live WhatsApp channel, or automatic POs.
+  - QA: `node scripts/qa/ai-assistant-qa.mjs qa-out/ai` (47 checks).
+- **Scantry (2026-10-22):** `content/case-studies/scantry.ts`, slug `scantry`, fourth in the Selected work showcase. Six chapters via `fieldStory`, rendered by `components/detail/field-story-chapters.tsx`.
+  - Sources: `Projects Audit/Scantry audit.md` (lists security weaknesses: never commit or publish), the five fortnightly reflections and the pitch deck (copies in `Project Screenshots/scantry/originals-PRIVATE/`).
+  - Demos in `components/showcases/scantry/`: the guided access simulator (`access-model.ts` + `access-simulator.tsx`, four scenarios, no camera), vision pipeline, kiosk screens, system map with a synthetic dashboard, dated timeline, and the homepage still (`kiosk-preview.tsx`).
+  - Media: the owner approved all seven candidates on 2026-10-22 (logos, team slide and demo photo included). They are live from `public/images/projects/scantry/`; originals and `REVIEW.html` stay in `Project Screenshots/scantry/`. No photo of the physical kiosk or event exists yet.
+  - Teammates are described by role, not name, until they consent. S$10,000 is the owner's reported funding (the deck asks for S$9,000). Event attendance (~800–1,000/day, 9 days) is never presented as kiosk scans.
+  - QA: `node scripts/qa/scantry-qa.mjs qa-out/scantry` against a production server on :3123 (74 checks).
+- **Context-Aware Digital Advertising (2026-10-22):** `content/case-studies/context-aware-advertising.ts`, slug `context-aware-advertising` (replaces the `vision-advertising` draft, which now 404s). Listed on `/projects` only (not the homepage). Five chapters via `rdStory`, rendered by `components/detail/rd-story-chapters.tsx`.
+  - Owner confirmed: developed at Unistop Tech in collaboration with the Intel team; the owner develops the vision and advertising side; walking pace and ad selection are at the design stage (no code). It is unrelated to `demographic/app.py` in Unistopapp_Deployment (a colleague's kiosk work): never borrow its models, OpenVINO or features.
+  - No technologies listed until the owner confirms them. Stage statuses: detection and audience estimation "in development", the rest "planned".
+  - Demos in `components/showcases/advertising/`: the Ad Selection Explorer (`explorer-model.ts` illustrative policy + `ad-explorer.tsx`), the composition concept, and the homepage still. CSS `ad-walk` / `ad-swap` keyframes in `app/globals.css` (walkers stop under reduced effects).
+  - Intel wording also added to the AI Operations Assistant (facts, overview line, homepage card) and the Unistop role (two contributions only).
+  - QA: `node scripts/qa/advertising-qa.mjs qa-out/advertising` (83 checks).
+- **Homepage refinement (2026-10-22):** Selected work is a horizontal showcase of four (`featuredProjects()`: Inventory, AI assistant, ERM, Scantry). The More work row is gone; Context-Aware Digital Advertising is on `/projects` only and its page returns there.
+  - `components/sections/work.tsx` renders the cards from each project's `homeCard` (label, category, headline, summary, proof, ≤3 tags, visualNote). `work-showcase.tsx` picks the mode: **pin** (GSAP, ≥1100×760, travel measured from the cards, 0.65px of scroll per px of travel), **carousel** (native scroll-snap; everything smaller), **list** (reduced effects). CSS is in `app/globals.css` under "Selected work showcase"; previews shrink in short frames via `.pv-zoom` / `.pv-optional`.
+  - Controls: counter, prev/next, project-name tabs, progress line, "Skip to Experience". Focusing an off-screen card brings it into view.
+  - RAG removed: no implementation exists in the Unistop code. The Unistop contribution is gone, the skill is `verified: false`, and `llm-rag` is hidden.
+  - Hero intro shortened; About rewritten from verified facts (the third paragraph paraphrases the case-study reflections; confirm wording).
+  - QA: `node scripts/qa/home-qa.mjs qa-out/home` (136 checks); the ai-assistant, scantry, advertising and inventory suites were updated and pass.
 - **Unused now:** `ops-console*` (the old inventory showcase) is no longer referenced by any project.
 
 ## 0. Latest (2026-10-20, supersedes the sections below where they conflict)

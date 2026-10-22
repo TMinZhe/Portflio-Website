@@ -204,10 +204,26 @@ export type DemoKey =
   | "audit-timeline"
   | "store-topology"
   | "offline-delivery"
-  | "forecast-explorer"
   | "stock-placement"
   | "cogs-ledger"
-  | "inventory-architecture";
+  | "inventory-architecture"
+  | "guided-delivery"
+  | "forecast-guide"
+  | "shelf-guard"
+  | "revenue-example"
+  | "ai-chat"
+  | "ai-pipeline"
+  | "ai-guardrails"
+  | "ai-inference"
+  | "ai-latency"
+  | "ai-eval"
+  | "scantry-access"
+  | "scantry-vision"
+  | "scantry-kiosk"
+  | "scantry-system"
+  | "scantry-timeline"
+  | "ad-explorer"
+  | "ad-composition";
 
 /** An engineering highlight with its own section, optional demo and steps. */
 export type DeepDive = {
@@ -242,10 +258,128 @@ export type ProjectSectionId =
   | "lessons"
   | "context";
 
+/* ---------- Guided story (six-chapter case study) ---------- */
+
+/** One guided demo in "How I solved it": a plain question first, the mechanism behind a disclosure. */
+export type StoryDemo = {
+  /** Anchor id for the subsection. */
+  id: string;
+  question: string;
+  /** One or two plain sentences before the demo. */
+  context: string;
+  guided: DemoKey;
+  /** The deep dive (in `deepDives`) whose technical text and advanced demo sit behind the disclosure. */
+  deepDive: string;
+  /** Disclosure label, e.g. "Explore the technical mechanism". */
+  advancedLabel: string;
+};
+
+/**
+ * Plain-language layer for a case study. When present, the project page
+ * renders six chapters (project, problem, platform, solution, engineering,
+ * impact) and moves technical material into opt-in disclosures.
+ */
+export type CaseStudyStory = {
+  /** Three short "at a glance" cards in chapter 1. */
+  glance: { label: string; text: string }[];
+  /** What could go wrong, in plain words, under the problem. */
+  problemPoints: string[];
+  /** Media ids (from `walkthrough`) shown large in the tour; the rest go in a gallery. */
+  tourFeatured: string[];
+  /** One-line purpose per screen, keyed by media id. */
+  tourCaptions: Record<string, string>;
+  solutionIntro: string;
+  demos: StoryDemo[];
+  engineeringIntro: string;
+  /** Deep dive id shown under "Accurate financial reporting". */
+  financeDive?: string;
+  financeLead?: DemoKey;
+  /** Short chapter headings, keyed by chapter id. */
+  headings: Record<"project" | "problem" | "platform" | "solution" | "engineering" | "impact", string>;
+};
+
+/** Six-chapter layout for an applied-AI case study: overview, problem, try it, how it works, engineering, impact. */
+export type AiStory = {
+  headings: Record<"overview" | "problem" | "try" | "how" | "engineering" | "impact", string>;
+  glance: { label: string; text: string }[];
+  problem: { paragraphs: string[]; before: string[]; after: string[]; challenge: string };
+  tryIntro: string;
+  chat: DemoKey;
+  chatNote: string;
+  howIntro: string;
+  pipeline: DemoKey;
+  /** Technical terms behind "Explore the engineering", each explained. */
+  engineering: Feature[];
+  /** The principal engineering stories, each with an optional visual and opt-in detail. */
+  stories: { id: string; kicker: string; heading: string; paragraphs: string[]; visuals?: DemoKey[]; details?: Feature[]; detailsLabel?: string }[];
+  /** Optional technical archive: one disclosure per group. */
+  archive: { label: string; items: Feature[] }[];
+  /** Short labelled facts under the outcome. */
+  measured: { label: string; value: string; note: string }[];
+  reflection: string[];
+  /** Related project slugs. */
+  related: string[];
+};
+
+/** Six-chapter layout for a physical, field-tested project: overview, challenge, how it works, engineering, validation, startup. */
+export type FieldStory = {
+  headings: Record<"overview" | "challenge" | "how" | "engineering" | "validation" | "startup", string>;
+  glance: { label: string; text: string }[];
+  /** Each difficulty beside the response the system gives it. */
+  challenge: { paragraphs: string[]; pairs: { problem: string; response: string }[] };
+  howIntro: string;
+  simulator: DemoKey;
+  simulatorNote: string;
+  engineeringIntro: string;
+  /** Same shape as the applied-AI stories: kicker, heading, prose, optional visual and opt-in detail. */
+  stories: { id: string; kicker: string; heading: string; paragraphs: string[]; visuals?: DemoKey[]; details?: Feature[]; detailsLabel?: string }[];
+  validation: {
+    paragraphs: string[];
+    /** Labelled facts; `source` says where each comes from. */
+    facts: { label: string; value: string; source: string }[];
+    feedback: string[];
+    /** What was never measured, stated plainly. */
+    unmeasured: string[];
+    media: PortfolioMedia[];
+  };
+  startup: {
+    paragraphs: string[];
+    /** What ran at the event, beside what the startup only proposed. */
+    delivered: string[];
+    proposed: string[];
+    milestones: { when: string; text: string }[];
+    media: PortfolioMedia[];
+  };
+  reflection: string[];
+  related: string[];
+};
+
+/** Where a capability stands. Only "implemented" may be described as working. */
+export type CapabilityStatus = "implemented" | "in-development" | "planned";
+
+/** Five-chapter layout for work in progress: overview, problem, prototype, engineering, what's next. */
+export type RdStory = {
+  headings: Record<"overview" | "problem" | "prototype" | "engineering" | "next", string>;
+  glance: { label: string; text: string }[];
+  /** The intended pipeline, each stage with its honest status. Update as work progresses. */
+  stages: { name: string; what: string; status: CapabilityStatus }[];
+  problem: { paragraphs: string[]; hypothesis: string; caveat: string };
+  explorerIntro: string;
+  explorer: DemoKey;
+  explorerNote: string;
+  engineeringIntro: string;
+  /** Expandable engineering sections, each with optional named points. */
+  sections: { id: string; title: string; paragraphs: string[]; points?: Feature[] }[];
+  /** Design commitments, stated as intentions rather than achievements. */
+  principles: string[];
+  next: { label: string; paragraphs: string[]; diagram: DemoKey; guardrails: string[] };
+  related: string[];
+};
+
 /* ---------- Projects ---------- */
 
 /** The schematic used for a project: interactive on its page, a still preview on the homepage. */
-export type Showcase = "ops-console" | "store-sync" | "text-to-sql" | "rag-pipeline" | "risk-matrix" | "detection-frame" | "none";
+export type Showcase = "ops-console" | "store-sync" | "ai-chat" | "text-to-sql" | "rag-pipeline" | "risk-matrix" | "detection-frame" | "scantry-kiosk" | "ad-pipeline" | "none";
 
 export type Project = {
   slug: string;
@@ -265,6 +399,38 @@ export type Project = {
   facts?: { label: string; value: string }[];
   /** Homepage outcome line when there is no figure. */
   outcomeLine?: Text;
+  /** Applied-AI six-chapter layout; see AiStory. */
+  aiStory?: AiStory;
+  /** Physical-product six-chapter layout; see FieldStory. */
+  fieldStory?: FieldStory;
+  /** Work-in-progress five-chapter layout; see RdStory. */
+  rdStory?: RdStory;
+  /** Industry collaborator, e.g. "Intel team". Never implies ownership or endorsement. */
+  collaboration?: string;
+  /** Present on active, unfinished work: shown as a badge everywhere the project appears. */
+  development?: { label: string; stage: string; updated: string };
+  /** Call-to-action label on project cards; defaults to "Explore case study". */
+  ctaLabel?: string;
+  /**
+   * The Selected work card: short copy only (aim for 35–55 visible words in
+   * headline + summary + proof). Everything else belongs on the case study.
+   */
+  homeCard?: {
+    /** Short name for the showcase's project navigation. */
+    label: string;
+    category: string;
+    headline: string;
+    summary: string;
+    proof: string;
+    /** At most three. */
+    tags: string[];
+    /** Short disclosure beside a schematic visual; images use their own media label. */
+    visualNote?: string;
+  };
+  /** Disclosure shown with the cover visual when it is a recreation. */
+  coverNote?: string;
+  /** Plain-language six-chapter layout; see CaseStudyStory. */
+  story?: CaseStudyStory;
   /** Longer section headings, keyed by section; the TOC keeps the short name. */
   headings?: Partial<Record<ProjectSectionId, string>>;
   category: string;

@@ -15,8 +15,9 @@ export const beyond: BeyondItem[] = [
   {
     kind: "Entrepreneurship",
     title: "Scantry",
-    role: todo("Your role at Scantry, e.g. Founder"),
-    detail: "Automated event access.",
+    role: "Co-founder",
+    detail: "QR and facial-verification event access, from a polytechnic project used at WorldSkills ASEAN Singapore 2023 to a pre-seed-funded startup concept.",
+    href: "/projects/scantry",
   },
   {
     kind: "Leadership",

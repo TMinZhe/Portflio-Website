@@ -36,6 +36,15 @@ export const enterpriseRiskManagement: Project = {
   confidential: true,
   experience: ["8pi-bizsolutions"],
 
+  homeCard: {
+    label: "Risk management",
+    category: "Enterprise Software / Automation",
+    headline: "Replacing spreadsheet-based risk coordination with structured workflows.",
+    summary: "Independently developed and deployed a corporate risk-management platform with multi-stage approvals, change history and quarterly risk tracking.",
+    proof: "Deployed to a corporate client.",
+    tags: ["Power Apps", "Power Fx", "SharePoint"],
+  },
+
   summary:
     "I independently developed and deployed an enterprise risk management application that centralizes risk records, coordinates multi-stage reviews, tracks changes, and supports structured reporting.",
   headline: "Engineering a structured risk-management workflow from a spreadsheet-driven process.",

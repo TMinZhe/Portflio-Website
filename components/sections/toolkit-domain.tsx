@@ -14,7 +14,7 @@ export function ToolkitDomain({ domain }: { domain: Domain }) {
   const current = domain.skills.find((s) => s.name === open);
 
   return (
-    <div className="grid gap-x-8 gap-y-3 border-t border-line py-6 md:grid-cols-[12rem_1fr]">
+    <div className="grid gap-x-8 gap-y-2 border-t border-line py-4 md:grid-cols-[10rem_1fr]">
       <dt className="pt-2 text-ink-2">{domain.name}</dt>
       <dd>
         <ul className="flex flex-wrap gap-2">
@@ -29,14 +29,14 @@ export function ToolkitDomain({ domain }: { domain: Domain }) {
                     aria-expanded={active}
                     aria-controls={panelId}
                     onClick={() => setOpen(active ? null : s.name)}
-                    className={`min-h-11 rounded-[var(--r-xs)] border px-3 text-[0.9375rem] transition-colors duration-[var(--d-fast)] ${
+                    className={`min-h-10 rounded-[var(--r-xs)] border px-3 text-[0.875rem] transition-colors duration-[var(--d-fast)] ${
                       active ? "border-lime bg-lime/10 text-ink" : "border-line-strong hover:border-ink-2"
                     }`}
                   >
                     {s.name}
                   </button>
                 ) : (
-                  <span className="inline-flex min-h-11 items-center rounded-[var(--r-xs)] border border-line px-3 text-[0.9375rem]">
+                  <span className="inline-flex min-h-10 items-center rounded-[var(--r-xs)] border border-line px-3 text-[0.875rem]">
                     {s.name}
                   </span>
                 )}

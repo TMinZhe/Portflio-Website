@@ -7,14 +7,14 @@ import { MediaKind } from "@/components/media/media-kind";
 import { SchematicLabel } from "@/components/ui/schematic-label";
 import { ExpandingStage } from "@/components/sections/expanding-stage";
 
-type Props = { cover?: PortfolioMedia; showcase?: Showcase; allowStill?: boolean };
+type Props = { cover?: PortfolioMedia; showcase?: Showcase; allowStill?: boolean; /** Label for a schematic or recreation cover. */ note?: string };
 
 /**
  * The large visual under a detail hero, in order of preference: an approved
  * cover image, the project's interactive schematic, its still schematic, or
  * nothing, in which case the page simply moves on to its content.
  */
-export function DetailCover({ cover, showcase, allowStill = true }: Props) {
+export function DetailCover({ cover, showcase, allowStill = true, note }: Props) {
   // Only approved files can lead the page; pending ones fall back to the schematic.
   const media = visibleMedia(cover ? [cover] : []).find((m) => m.approved);
   const Show = showcase ? showcases[showcase] : undefined;
@@ -39,7 +39,7 @@ export function DetailCover({ cover, showcase, allowStill = true }: Props) {
       <ExpandingStage className="mt-[clamp(2.5rem,6vw,5rem)] bg-[var(--c-elevated)] py-[clamp(2rem,5vw,5rem)]">
         <div className="shell">
           <div className="mb-5">
-            <SchematicLabel />
+            <SchematicLabel>{note}</SchematicLabel>
           </div>
           <Show headingLevel={2} />
         </div>
@@ -51,7 +51,7 @@ export function DetailCover({ cover, showcase, allowStill = true }: Props) {
     return (
       <div className="shell mt-[clamp(2.5rem,6vw,5rem)]">
         <div className="mb-3">
-          <SchematicLabel />
+          <SchematicLabel>{note}</SchematicLabel>
         </div>
         <Still />
       </div>

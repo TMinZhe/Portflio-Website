@@ -10,10 +10,11 @@ export const skillDomains: SkillDomain[] = [
     id: "languages",
     name: "Languages",
     skills: [
-      { name: "Python", usedIn: ["collins-aerospace"], verified: true },
-      { name: "SQL", usedIn: ["nl-analytics-assistant", "unistop-tech", "collins-aerospace"], verified: true },
+      { name: "Python", usedIn: ["scantry", "collins-aerospace"], verified: true },
+      { name: "SQL", usedIn: ["ai-operations-assistant", "unistop-tech", "collins-aerospace"], verified: true },
       { name: "TypeScript", usedIn: ["this-site"], verified: true },
       { name: "JavaScript", usedIn: ["inventory-replenishment", "unistop-tech"], verified: true },
+      { name: "PHP", usedIn: ["scantry"], verified: true },
     ],
   },
   {
@@ -27,16 +28,18 @@ export const skillDomains: SkillDomain[] = [
   {
     id: "data",
     name: "Databases",
-    skills: [{ name: "MySQL", usedIn: ["inventory-replenishment", "unistop-tech"], verified: true }],
+    skills: [{ name: "MySQL", usedIn: ["inventory-replenishment", "unistop-tech", "scantry"], verified: true }],
   },
   {
     id: "ai",
     name: "AI and ML",
     skills: [
-      { name: "Self-hosted LLMs", usedIn: ["nl-analytics-assistant", "unistop-tech"], verified: true },
-      { name: "Text-to-SQL", usedIn: ["nl-analytics-assistant", "unistop-tech"], verified: true },
-      { name: "Retrieval-augmented generation", usedIn: ["llm-rag", "unistop-tech"], verified: true },
-      { name: "Computer vision", usedIn: ["vision-advertising", "unistop-tech"], verified: true },
+      { name: "Self-hosted LLMs", usedIn: ["ai-operations-assistant", "unistop-tech"], verified: true },
+      { name: "On-device LLM inference (OpenVINO)", usedIn: ["ai-operations-assistant"], verified: true },
+      { name: "LLM evaluation", usedIn: ["ai-operations-assistant"], verified: true },
+      // Hidden: no RAG implementation found in the Unistop code (2026-10-22). The AI assistant routes intents; it isn't RAG.
+      { name: "Retrieval-augmented generation", usedIn: [], verified: false },
+      { name: "Computer vision", usedIn: ["scantry", "unistop-tech"], verified: true },
     ],
   },
   {

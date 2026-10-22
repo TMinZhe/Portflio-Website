@@ -11,7 +11,7 @@ export const profile: Profile = {
   study: "Computer Science, National University of Singapore",
   positioning: "Software Engineering & AI.",
   intro:
-    "I build full-stack applications, AI-powered tools and enterprise systems that solve real operational problems, from risk management and inventory replenishment to LLM-powered analytics.",
+    "I build production software and applied AI systems, from retail operations and enterprise workflows to self-hosted language-model applications.",
   email: "minzhetan@gmail.com",
   location: "Singapore",
   links: {

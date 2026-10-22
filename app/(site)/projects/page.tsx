@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { knownList, projectHref, publishedProjects } from "@/lib/content";
+import { DevelopmentBadge } from "@/components/detail/detail-hero";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -37,10 +38,12 @@ export default function ProjectsIndex() {
                     {p.title}
                     <ArrowUpRight size={20} aria-hidden className="mt-1 shrink-0 text-ink-2 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-lime" />
                   </span>
+                  {p.development && <DevelopmentBadge className="mt-3 w-fit">{p.development.label}</DevelopmentBadge>}
                   <span className="mt-2 block max-w-[56ch] text-ink">{p.summary}</span>
                 </span>
                 <span className="col-span-full text-[0.9375rem] text-ink-2 md:col-span-8 md:col-start-2 lg:col-span-4 lg:col-start-9 lg:pt-2">
                   {[p.organisation, p.category].filter(Boolean).join(" · ")}
+                  {p.collaboration && <span className="mt-1 block">Industry collaboration: {p.collaboration}</span>}
                   {stack.length > 0 && <span className="mt-1 block">{stack.join(" · ")}</span>}
                 </span>
               </a>

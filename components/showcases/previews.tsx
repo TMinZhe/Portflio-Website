@@ -3,6 +3,9 @@ import type { Showcase } from "@/content/types";
 import { STORES, grid, type Cell } from "./ops-console-model";
 import { RiskMatrix } from "./erm/risk-matrix";
 import { StoreSyncPreview } from "./inventory/store-sync-preview";
+import { AiChatPreview } from "./ai-assistant/chat-preview";
+import { KioskPreview } from "./scantry/kiosk-preview";
+import { AdPipelinePreview } from "./advertising/ad-preview";
 
 /*
  * Still previews for the homepage. Each is an illustrative schematic of what a
@@ -60,40 +63,6 @@ function Row({ row }: { row: Cell[] }) {
   );
 }
 
-/** Analytics assistant: a plain-language question, the SQL it becomes, and the explained answer. */
-function TextToSqlPreview() {
-  return (
-    <div className={panel}>
-      <p className="ml-auto max-w-[85%] rounded-[var(--r-md)] rounded-br-[var(--r-xs)] bg-[var(--c-elevated)] px-4 py-3 text-[0.9375rem]">
-        Which items are below their reorder point at each store?
-      </p>
-      <pre className="overflow-hidden rounded-[var(--r-sm)] bg-[var(--c-void)] px-4 py-3 font-mono text-[0.75rem] leading-relaxed text-ink-2 sm:text-[0.8125rem]">
-        <code>
-          <span className="text-ice">SELECT</span> store, item, on_hand{"\n"}
-          <span className="text-ice">FROM</span> stock{"\n"}
-          <span className="text-ice">WHERE</span> on_hand &lt; reorder_point{"\n"}
-          <span className="text-ice">ORDER BY</span> store;
-        </code>
-      </pre>
-      <div className="grid grid-cols-3 gap-x-4 gap-y-1.5 text-[0.8125rem] tabular-nums">
-        {["Store", "Item", "On hand"].map((h) => (
-          <span key={h} className="t-meta">
-            {h}
-          </span>
-        ))}
-        {[
-          ["Store A", "1041", "4"],
-          ["Store B", "2295", "2"],
-          ["Store D", "3302", "9"],
-        ].map((r) => r.map((v, i) => <span key={r[0] + i}>{v}</span>))}
-      </div>
-      <p className="max-w-[85%] rounded-[var(--r-md)] rounded-bl-[var(--r-xs)] bg-[var(--c-elevated)] px-4 py-3 text-[0.9375rem]">
-        Three items are below their reorder point, one each at Stores A, B and D. Store B is lowest, with 2 left.
-      </p>
-    </div>
-  );
-}
-
 /** Risk management: a still frame of the synthetic risk matrix. */
 function RiskMatrixPreview() {
   return <RiskMatrix still />;
@@ -102,6 +71,8 @@ function RiskMatrixPreview() {
 export const previews: Partial<Record<Showcase, ComponentType>> = {
   "ops-console": InventoryPreview,
   "store-sync": StoreSyncPreview,
-  "text-to-sql": TextToSqlPreview,
+  "ai-chat": AiChatPreview,
   "risk-matrix": RiskMatrixPreview,
+  "scantry-kiosk": KioskPreview,
+  "ad-pipeline": AdPipelinePreview,
 };

@@ -111,7 +111,7 @@ const kindLabel: Record<Outcome["kind"], string> = {
 };
 
 /** Scope and capabilities are kept visibly apart from measured impact. */
-export function OutcomeList({ outcomes }: { outcomes: Outcome[] }) {
+export function OutcomeList({ outcomes, note = true }: { outcomes: Outcome[]; /** The "not yet measured" note under capability-only lists. */ note?: boolean }) {
   const measured = outcomes.some((o) => o.kind === "measured");
   return (
     <div>
@@ -128,7 +128,7 @@ export function OutcomeList({ outcomes }: { outcomes: Outcome[] }) {
           </li>
         ))}
       </ul>
-      {!measured && (
+      {!measured && note && (
         <p className="mt-8 max-w-[56ch] text-[0.9375rem] text-ink-2">
           These describe what the system covers and does. Measured impact will be added once it has been measured.
         </p>

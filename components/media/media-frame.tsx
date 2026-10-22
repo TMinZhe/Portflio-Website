@@ -14,6 +14,8 @@ type Props = {
   controls?: boolean;
   eager?: boolean;
   className?: string;
+  /** Overlay the Illustrative/approval tags (off where the surrounding section already labels the media). */
+  tags?: boolean;
 };
 
 const photoCategories = new Set(["workplace", "event"]);
@@ -22,7 +24,7 @@ const photoCategories = new Set(["workplace", "event"]);
  * One image or video in a fixed-ratio box. A missing or broken file swaps to a
  * quiet fallback panel, so a broken-image icon never shows.
  */
-export function MediaFrame({ media, sizes, fit, controls = true, eager, className = "" }: Props) {
+export function MediaFrame({ media, sizes, fit, controls = true, eager, className = "", tags = true }: Props) {
   const [failed, setFailed] = useState(false);
   const boxRef = useRef<HTMLDivElement>(null);
   const objectFit = fit ?? (media.category && photoCategories.has(media.category) ? "cover" : "contain");
@@ -75,7 +77,7 @@ export function MediaFrame({ media, sizes, fit, controls = true, eager, classNam
           onError={() => setFailed(true)}
         />
       )}
-      <MediaTags media={media} />
+      {tags && <MediaTags media={media} />}
     </div>
   );
 }

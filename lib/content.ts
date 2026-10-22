@@ -27,8 +27,8 @@ export const visibleMedia = (list: readonly PortfolioMedia[] | undefined) =>
 export const routableProjects = () => projects.filter((p) => isRoutable(p.status));
 /** Public lists (homepage, /projects) show published work only, in dev too. */
 export const publishedProjects = () => projects.filter((p) => p.status === "published");
-/** Up to three featured projects for the homepage, in content order. */
-export const featuredProjects = () => publishedProjects().filter((p) => p.featured).slice(0, 3);
+/** Up to four featured projects for the homepage showcase, in content order. */
+export const featuredProjects = () => publishedProjects().filter((p) => p.featured).slice(0, 4);
 export const getProject = (slug: string) => routableProjects().find((p) => p.slug === slug);
 
 /** Previous and next routable project, wrapping around. */

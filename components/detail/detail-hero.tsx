@@ -17,10 +17,12 @@ type Props = {
   figure?: { value: string; label: string };
   actions?: ReactNode;
   draft?: boolean;
+  /** Work-in-progress badge, e.g. "In development · Applied AI R&D". */
+  status?: string;
 };
 
 /** Opening of a project or experience page: identity left, facts right. */
-export function DetailHero({ back, eyebrow, title, headline, summary, meta, chips, figure, actions, draft }: Props) {
+export function DetailHero({ back, eyebrow, title, headline, summary, meta, chips, figure, actions, draft, status }: Props) {
   return (
     <header className="shell grid-12 gap-y-10 pt-[calc(var(--nav-h)+clamp(2rem,6vh,4.5rem))]">
       <div className="col-span-full lg:col-span-8">
@@ -33,6 +35,11 @@ export function DetailHero({ back, eyebrow, title, headline, summary, meta, chip
           {back.label}
         </a>
         <p className="t-meta mt-8">{eyebrow}</p>
+        {status && (
+          <p className="mt-4">
+            <DevelopmentBadge>{status}</DevelopmentBadge>
+          </p>
+        )}
         <h1 className="t-h1 mt-4 max-w-[18ch]">{title}</h1>
         {headline && <p className="t-h3 mt-6 max-w-[30ch] text-ink">{headline}</p>}
         <p className="t-lead mt-5 max-w-[56ch] text-ink">{summary}</p>
@@ -63,6 +70,16 @@ export function DetailHero({ back, eyebrow, title, headline, summary, meta, chip
         )}
       </aside>
     </header>
+  );
+}
+
+/** Marks active, unfinished work. Shared by the hero and the homepage cards. */
+export function DevelopmentBadge({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return (
+    <span className={`inline-flex items-center gap-2 rounded-[var(--r-pill)] border border-[var(--c-warn)]/50 px-3 py-1 text-[0.8125rem] text-[var(--c-warn)] ${className}`}>
+      <span aria-hidden className="size-1.5 rounded-full bg-[var(--c-warn)]" />
+      {children}
+    </span>
   );
 }
 
